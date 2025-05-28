@@ -1,0 +1,57 @@
+import QuestionPrompt from "./ExamComponent/QuestionPrompt";
+import CountdownTimer from "./Helper/CountdownTimer";
+import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "reactstrap";
+import { useEffect, useState } from 'react';
+import Modal from "react-modal";
+export default function Examgrid({ exam, getAnswer, onAnswerChange, submitAnswers }) {
+    const questions = [...exam.questions];
+    
+
+    const theAnswer = (answer) => {
+        const [qid, ans] = answer.split(":");
+        onAnswerChange(qid, ans);        
+    };
+
+    const handleTimeUp = () => {
+        submitAnswers();
+    };
+
+    return (
+
+        <>
+            <Container className="mt-3">
+                <CountdownTimer userId={exam.student.studentId}
+                    examId={exam.examId}
+                    durationSeconds={exam.durationMinutes}
+                    onTimeUp={handleTimeUp} />
+                <Row>
+                    {questions.map((question, index) => (
+                        <Col key={question.questionId || index} lg={2} md={4} sm={6} xs={12} className="mb-4">
+                            <Card className="h-100 shadow-sm">
+                                <CardBody>
+                                    <CardTitle tag="h6" className="mb-3" style={{ fontSize: "12px" }}>
+                                        {index + 1}: {question.text.length < 55
+                                            ? question.text + '\u00A0'.repeat(55 - question.text.length)
+                                            : question.text.slice(0, 55) + ' ...'}
+                                    </CardTitle>
+                                    <QuestionPrompt question={question} answerToSubmit={theAnswer} verifyAnswer={getAnswer} />
+                                </CardBody>
+                                <CardFooter>
+                                    <small className="text-muted">Your Answer:{" "}
+                                        {getAnswer[question.questionId] ? (
+                                            <span className="badge bg-success text-white">
+                                                {getAnswer[question.questionId]}
+                                            </span>
+                                        ) : (
+                                                <span className="text-muted badge bg-danger text-white"></span>
+                                        )}</small>
+                                </CardFooter>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
+        </>
+
+    );
+}
