@@ -19,16 +19,24 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
     }, [question.questionId, savedAnswer]);
 
 
-        
-    
-    
-    function getValues(val, id) {
+    const getValues = (val, id) => {
         setSelected(val);
         setGetQuestionId(id);
     }
-    function handleSave() {
+    const handleSave = () => {
         setModalIsOpen(false);
         answerToSubmit(getQuestionId+":"+selected);
+    }
+
+    const cancelOptions = () => {
+        
+        if (savedAnswer != "") {
+            setSelected((prev) => savedAnswer);
+        } else {
+            setSelected((prev) => '');
+        }
+        setModalIsOpen(false);
+        
     }
 
 
@@ -36,7 +44,7 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
     return (
 
         <>
-            <button type="button" className={selected !== '' ? "btn btn-success btn-sm" : "btn btn-primary btn-sm"} onClick={() => setModalIsOpen(true)}>View Question</button>
+            <button type="button" className={`btn btn-sm ${selected !== '' ? "btn-success" : "btn-primary"} no-transition`} onClick={() => setModalIsOpen(true)}>View Question</button>
             
             <Modal isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
@@ -51,7 +59,7 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
                     onSelect={getValues} />
                 <div className="modal-buttons">
                     <SaveOrCloseButton onClick={handleSave} label="save" />
-                        <SaveOrCloseButton onClick={() => setModalIsOpen(false)} label="close" />
+                    <SaveOrCloseButton onClick={cancelOptions} label="close" />
                     </div>
                
              </Modal>
