@@ -1,5 +1,6 @@
-import ExamGrid from "./Components/ExamGrid";
-import { exam } from './Data';
+import ExamGrid from "../Components/ExamComponent/ExamGrid";
+import Body from "../Components/Panels/Body";
+import { exam } from '../Data';
 import { useRef, useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
 import Cookies from 'js-cookie';
@@ -9,17 +10,6 @@ export default function Conductor() {
     const { examId } = useParams();
     const [getAnswer, setGetAnswer] = useState([]);
     const COOKIE_NAME = `answers_exam_${exam.examId}_user_${exam.student.studentId}`;
-
-    /*function useRenderCount(name = 'Render') {
-        const count = useRef(1);
-        useEffect(() => {
-            count.current += 1;
-            console.log(`${name} rendered ${count.current} times`);
-        });
-    }*/ //to count renders
-
-    
-
 
     const submitAnswers = async () => {
         const payload = {
@@ -82,16 +72,17 @@ export default function Conductor() {
     return (
 
         <>
-            <form onSubmit={handleSubmit}>
-                <ExamGrid exam={exam} getAnswer={getAnswer} onAnswerChange={handleAnswerChange} submitAnswers={submitAnswers} />
+            <Body>
+                <form onSubmit={handleSubmit}>
+                    <ExamGrid exam={exam} getAnswer={getAnswer} onAnswerChange={handleAnswerChange} submitAnswers={submitAnswers} />
 
-                <div className="d-grid gap-2 col-1 mx-auto">
-                    <Button size="lg" color="primary" type="submit">
-                        Submit
-                    </Button>
-                </div>
-            </form>
-            
+                    <div className="d-grid gap-2 col-1 mx-auto">
+                        <Button size="lg" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </div>
+                </form>
+            </Body>        
         </>
 
     );
