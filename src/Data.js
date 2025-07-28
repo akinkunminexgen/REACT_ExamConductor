@@ -66,21 +66,41 @@ const questions = [
     },
 ];
 
-export const exam = {
-    "examId": "EXAM-1345",
-    "title": "Web Development Final",
-    "courseCode": "WD401",
-    "instructor": "Jane Doe",
-    "totalMarks": 100,
-    "durationMinutes": 500,
-    "questionPerPage": 3,
-    "student": {
-        "studentId": "S123456",
-        "fullName": "John Smith",
-        "email": "john@example.com"
+export const exams = [
+    {
+        "examId": "EXAM-1345",
+        "title": "Web Development Final",
+        "courseCode": "WD401",
+        "instructor": "Jane Doe",
+        "totalMarks": 100,
+        "durationMinutes": 500,
+        "questionPerPage": 3,
+        "Date": "2025-06-16T17:00:00",
+        "student": {
+            "studentId": "S123456",
+            "fullName": "John Smith",
+            "email": "john@example.com"
+        },
+        "questions": [...questions]
     },
-    "questions": [...questions],
-}
+    {
+        "examId": "EXAM-9087",
+        "title": "Fluid Mechanism Final",
+        "courseCode": "FM401",
+        "instructor": "Ashley Young",
+        "totalMarks": 100,
+        "durationMinutes": 500,
+        "questionPerPage": 4,
+        "Date": "2025-06-16T17:00:00",
+        "student": {
+            "studentId": "S123456",
+            "fullName": "John Smith",
+            "email": "john@example.com"
+        },
+        "questions": [...questions]
+    },
+
+]
 
 
 export const student = [

@@ -1,6 +1,6 @@
 import ExamGrid from "../Components/ExamComponent/ExamGrid";
 import Body from "../Components/Panels/Body";
-import { exam } from '../Data';
+import { exams } from '../Data';
 import { useRef, useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
 import Cookies from 'js-cookie';
@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 export default function Conductor() {
 
     const { examId } = useParams();
+    const exam = exams.find(ex => ex.examId == examId);
     const [getAnswer, setGetAnswer] = useState([]);
     const COOKIE_NAME = `answers_exam_${exam.examId}_user_${exam.student.studentId}`;
 

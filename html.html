@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam Modal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .open-modal-btn {
+            padding: 14px 28px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+            .modal.active {
+                display: flex;
+            }
+
+        .exam-container {
+            background: #ffffff;
+            max-width: 600px;
+            width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+            .close-btn:hover {
+                color: #333;
+            }
+
+        .question-label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+            .submit-btn:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+
+    <button class="open-modal-btn" onclick="openModal()">Start Exam</button>
+
+    <!-- Modal Structure -->
+    <div class="modal" id="examModal">
+        <div class="exam-container">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+
+            <label class="question-label" for="question">Question</label>
+            <textarea id="question" rows="3">Which of the following is a JavaScript framework?</textarea>
+
+            <div class="options">
+                <div class="option-item"><input type="radio" name="answer" id="optA" value="A"> <label for="optA">A. Laravel</label></div>
+                <div class="option-item"><input type="radio" name="answer" id="optB" value="B"> <label for="optB">B. Flask</label></div>
+                <div class="option-item"><input type="radio" name="answer" id="optC" value="C"> <label for="optC">C. Django</label></div>
+                <div class="option-item"><input type="radio" name="answer" id="optD" value="D"> <label for="optD">D. React</label></div>
+                <div class="option-item"><input type="radio" name="answer" id="optE" value="E"> <label for="optE">E. Ruby on Rails</label></div>
+            </div>
+
+            <button class="submit-btn" onclick="submitAnswer()">Submit Answer</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('examModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('examModal').classList.remove('active');
+        }
+
+        function submitAnswer() {
+            const options = document.getElementsByName('answer');
+            let selected = null;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].checked) {
+                    selected = options[i].value;
+                    break;
+                }
+            }
+
+            if (selected) {
+                alert("You selected option: " + selected);
+            } else {
+                alert("Please select an answer.");
+            }
+        }
+    </script>
+
+</body>
+</html>

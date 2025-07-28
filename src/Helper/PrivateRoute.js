@@ -1,34 +1,23 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import authService from "../Services/Auth";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-export default function PrivateRoute({ component: Component, allowedRoles, ...rest }) {
+export default function PrivateRoute({ allowedRoles }) {
 
-    const isAuth = authService.isAuthenticated();
+    //const isAuth = authService.isAuthenticated();
+    const isAuth = true;
+    //const userRole = authService.getRole();
+    const userRole = "Admin";
 
     const checkRoles = () => {
-        return true;
+        return allowedRoles.includes(userRole);
     }
-
     return (
 
-        isAuth ? (<Route {...rest} render={
-            props => {
-                if (checkRoles) {
-                    return <Component {...rest} {...props} />
-                } else {
-                    return <Redirect to={
-                        {
-                            pathname: '/unauthorized',
-                            state: {
-                                from: props.location
-                            }
-                        }
-                    } />
-                }
-            }
-        } />
+        isAuth ? (
+            checkRoles() ? (<Outlet />) :
+                (<Navigate to="/unauthorized" />)        
         ) : (<Navigate to="/login" />)
     )
 };

@@ -1,6 +1,7 @@
 
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "auth_user";
+const USER_ROLE = "Admin";
 
 const Auth = {
     login: async (email, password) => {
@@ -16,12 +17,14 @@ const Auth = {
         const data = await response.json();
         localStorage.setItem(TOKEN_KEY, data.token);
         localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        localStorage.setItem(USER_ROLE, JSON.stringify(data.role));
         return data;
     },
 
     logout: () => {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
+        localStorage.removeItem(USER_ROLE);
     },
 
     getToken: () => {
@@ -31,6 +34,11 @@ const Auth = {
     getCurrentUser: () => {
         const user = localStorage.getItem(USER_KEY);
         return user ? JSON.parse(user) : null;
+    },
+
+    getRole: () => {
+        const role = localStorage.getItem(USER_ROLE);
+        return role ? JSON.parse(role) : null;
     },
 
     isAuthenticated: () => {
