@@ -13,6 +13,7 @@ export default function Conductor() {
     const COOKIE_NAME = `answers_exam_${exam.examId}_user_${exam.student.studentId}`;
 
     const submitAnswers = async () => {
+        ;
         const payload = {
             studentId: exam.student.studentId,  
             examId: exam.examId,           
@@ -21,7 +22,7 @@ export default function Conductor() {
                 answer
             }))
         };
-
+        console.log("submission payload", payload);
         try {
             const response = await fetch("/api/submit-answers", {
                 method: "POST",
@@ -63,7 +64,7 @@ export default function Conductor() {
 
     const handleAnswerChange = (qid, answer) => {
         const updatedAnswers = {
-            ...getAnswer, [qid.trim()]: answer
+            ...getAnswer, [(qid || "").trim()]: answer
         };
         setGetAnswer(updatedAnswers);
 

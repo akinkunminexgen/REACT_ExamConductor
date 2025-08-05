@@ -6,7 +6,7 @@ import Modal from "react-modal";
 
 export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer }) {
     Modal.setAppElement('#root');
-    const [selected, setSelected] = useState('');
+    const [selected, setSelected] = useState([]);
     const [getQuestionId, setGetQuestionId] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -19,25 +19,32 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
     }, [question.questionId, savedAnswer]);
 
 
-    const getValues = (val, id) => {
-        setSelected(val);
+    const getValues = (val, id, isItCheckbox) => {
+        if (isItCheckbox) {
+            if (selected.includes(val)) {
+                setSelected(selected.filter(item => item !== val));
+            } else {
+                setSelected([...selected, val]);
+            }
+        } else {
+            setSelected([val]);
+        }        
         setGetQuestionId(id);
     }
+
     const handleSave = () => {
         setModalIsOpen(false);
-        answerToSubmit(getQuestionId+":"+selected);
+        answerToSubmit({ questionId: getQuestionId, selectedOptions: selected });
     }
 
     const cancelOptions = () => {
-        
-        if (savedAnswer != "") {
-            setSelected((prev) => savedAnswer);
+        if (savedAnswer && savedAnswer.length > 0) {
+            setSelected(savedAnswer);
         } else {
-            setSelected((prev) => '');
+            setSelected([]);
         }
         setModalIsOpen(false);
-        
-    }
+    };
 
 
 
@@ -56,7 +63,8 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
                     name={question.questionId}
                     options={question.options}
                     selected={selected}
-                    onSelect={getValues} />
+                    onSelect={getValues}
+                    isItCheckbox={question.isCheckbox} />
                 <div className="modal-buttons">
                     <SaveOrCloseButton onClick={handleSave} label="save" />
                     <SaveOrCloseButton onClick={cancelOptions} label="close" />

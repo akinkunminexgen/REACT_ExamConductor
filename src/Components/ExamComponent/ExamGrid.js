@@ -25,8 +25,9 @@ export default function Examgrid({ exam, getAnswer, onAnswerChange, submitAnswer
     
 
     const theAnswer = (answer) => {
-        const [qid, ans] = answer.split(":");
-        onAnswerChange(qid, ans);        
+
+        const { questionId, selectedOptions } = answer;
+        onAnswerChange(questionId, selectedOptions);        
     };
 
     const handleTimeUp = () => {
@@ -57,7 +58,7 @@ export default function Examgrid({ exam, getAnswer, onAnswerChange, submitAnswer
                                     <small className="text-muted">Your Answer:{" "}
                                         {getAnswer[question.questionId] ? (
                                             <span className="badge bg-success text-white">
-                                                {getAnswer[question.questionId]}
+                                                {getAnswer[question.questionId].join(" ")}
                                             </span>
                                         ) : (
                                                 <span className="text-muted badge bg-danger text-white"></span>

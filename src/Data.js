@@ -14,7 +14,8 @@ const questions = [
         options: [...options],
         correctAnswer: "A",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: true
     },
     {
         questionId: "Q2",
@@ -22,7 +23,8 @@ const questions = [
         options: [...options],
         correctAnswer: "B",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: false
     },
     {
         questionId: "Q3",
@@ -30,39 +32,44 @@ const questions = [
         options: [...options],
         correctAnswer: "C",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: false
     },
     {
-        questionId: 4,
+        questionId: "Q4",
         text: "In the context of modern web development, developers often utilize various tools, frameworks, and libraries to enhance the efficiency and scalability of building interactive user interfaces. Among the options listed below, identify the one that is specifically classified as a JavaScript library designed primarily for constructing and managing user interface components, often used in the development of single-page applications (SPAs). Which option best fits this description ? ",
         options: [...options],
         correctAnswer: "D",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: false
     },
     {
-        questionId: 5,
+        questionId: "Q5",
         text: "Which of the following is a full-stack web framework written in Ruby?",
         options: [...options],
         correctAnswer: "E",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: false
     },
     {
-        questionId: 6,
+        questionId: "Q6",
         text: "What Language are you familiar with?",
         options: [...options],
         correctAnswer: "E",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: false
     },
     {
-        questionId: 7,
+        questionId: "Q7",
         text: "linked with a corresponding Power BI workspace?",
         options: [...options],
         correctAnswer: "E",
         studentAnswer: "A",
-        marks: 5
+        marks: 5,
+        isCheckbox: false
     },
 ];
 
@@ -322,6 +329,3 @@ export const student = [
     }
 
 ]
-
-
-
