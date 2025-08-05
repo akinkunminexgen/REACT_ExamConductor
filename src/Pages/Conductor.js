@@ -1,5 +1,6 @@
-import ExamGrid from "./Components/ExamGrid";
-import { exam } from './Data';
+import ExamGrid from "../Components/ExamComponent/ExamGrid";
+import Body from "../Components/Panels/Body";
+import { exams } from '../Data';
 import { useRef, useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
 import Cookies from 'js-cookie';
@@ -7,21 +8,12 @@ import { useParams } from 'react-router-dom';
 export default function Conductor() {
 
     const { examId } = useParams();
+    const exam = exams.find(ex => ex.examId == examId);
     const [getAnswer, setGetAnswer] = useState([]);
     const COOKIE_NAME = `answers_exam_${exam.examId}_user_${exam.student.studentId}`;
 
-    /*function useRenderCount(name = 'Render') {
-        const count = useRef(1);
-        useEffect(() => {
-            count.current += 1;
-            console.log(`${name} rendered ${count.current} times`);
-        });
-    }*/ //to count renders
-
-    
-
-
     const submitAnswers = async () => {
+        ;
         const payload = {
             studentId: exam.student.studentId,  
             examId: exam.examId,           
@@ -30,7 +22,7 @@ export default function Conductor() {
                 answer
             }))
         };
-
+        console.log("submission payload", payload);
         try {
             const response = await fetch("/api/submit-answers", {
                 method: "POST",
@@ -72,7 +64,7 @@ export default function Conductor() {
 
     const handleAnswerChange = (qid, answer) => {
         const updatedAnswers = {
-            ...getAnswer, [qid.trim()]: answer
+            ...getAnswer, [(qid || "").trim()]: answer
         };
         setGetAnswer(updatedAnswers);
 
@@ -82,16 +74,17 @@ export default function Conductor() {
     return (
 
         <>
-            <form onSubmit={handleSubmit}>
-                <ExamGrid exam={exam} getAnswer={getAnswer} onAnswerChange={handleAnswerChange} submitAnswers={submitAnswers} />
+            <Body>
+                <form onSubmit={handleSubmit}>
+                    <ExamGrid exam={exam} getAnswer={getAnswer} onAnswerChange={handleAnswerChange} submitAnswers={submitAnswers} />
 
-                <div className="d-grid gap-2 col-1 mx-auto">
-                    <Button size="lg" color="primary" type="submit">
-                        Submit
-                    </Button>
-                </div>
-            </form>
-            
+                    <div className="d-grid gap-2 col-1 mx-auto">
+                        <Button size="lg" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    </div>
+                </form>
+            </Body>        
         </>
 
     );

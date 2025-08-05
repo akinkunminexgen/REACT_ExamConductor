@@ -6,7 +6,7 @@ import Modal from "react-modal";
 
 export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer }) {
     Modal.setAppElement('#root');
-    const [selected, setSelected] = useState('');
+    const [selected, setSelected] = useState([]);
     const [getQuestionId, setGetQuestionId] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -19,24 +19,39 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
     }, [question.questionId, savedAnswer]);
 
 
-        
-    
-    
-    function getValues(val, id) {
-        setSelected(val);
+    const getValues = (val, id, isItCheckbox) => {
+        if (isItCheckbox) {
+            if (selected.includes(val)) {
+                setSelected(selected.filter(item => item !== val));
+            } else {
+                setSelected([...selected, val]);
+            }
+        } else {
+            setSelected([val]);
+        }        
         setGetQuestionId(id);
     }
-    function handleSave() {
+
+    const handleSave = () => {
         setModalIsOpen(false);
-        answerToSubmit(getQuestionId+":"+selected);
+        answerToSubmit({ questionId: getQuestionId, selectedOptions: selected });
     }
+
+    const cancelOptions = () => {
+        if (savedAnswer && savedAnswer.length > 0) {
+            setSelected(savedAnswer);
+        } else {
+            setSelected([]);
+        }
+        setModalIsOpen(false);
+    };
 
 
 
     return (
 
         <>
-            <button type="button" className={selected !== '' ? "btn btn-success btn-sm" : "btn btn-primary btn-sm"} onClick={() => setModalIsOpen(true)}>View Question</button>
+            <button type="button" className={`btn btn-sm ${selected !== '' ? "btn-success" : "btn-primary"} no-transition`} onClick={() => setModalIsOpen(true)}>View Question</button>
             
             <Modal isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
@@ -48,10 +63,11 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
                     name={question.questionId}
                     options={question.options}
                     selected={selected}
-                    onSelect={getValues} />
+                    onSelect={getValues}
+                    isItCheckbox={question.isCheckbox} />
                 <div className="modal-buttons">
                     <SaveOrCloseButton onClick={handleSave} label="save" />
-                        <SaveOrCloseButton onClick={() => setModalIsOpen(false)} label="close" />
+                    <SaveOrCloseButton onClick={cancelOptions} label="close" />
                     </div>
                
              </Modal>
