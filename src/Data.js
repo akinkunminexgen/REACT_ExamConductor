@@ -82,7 +82,7 @@ export const exams = [
         "totalMarks": 100,
         "durationMinutes": 500,
         "questionPerPage": 3,
-        "Date": "2025-06-16T17:00:00",
+        "Date": "2025-08-21T11:30:00",
         "student": {
             "studentId": "S123456",
             "fullName": "John Smith",
@@ -98,7 +98,7 @@ export const exams = [
         "totalMarks": 100,
         "durationMinutes": 500,
         "questionPerPage": 4,
-        "Date": "2025-06-16T17:00:00",
+        "Date": "2025-08-21T08:45:00",
         "student": {
             "studentId": "S123456",
             "fullName": "John Smith",
