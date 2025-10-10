@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useFetch = (url, payload) => {
+const useFetch = (url, payload, method = "GET") => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const useFetch = (url, payload) => {
         setError(null);
 
         fetch(url, {
-            method: "POST",
+            method: method,
             headers: {
                 "Content-Type": "application/json"
             },

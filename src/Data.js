@@ -428,6 +428,35 @@ export const adminQuestionLoad = [
         ],
         "createdAt": "2025-10-06T12:05:00Z",
         "updatedAt": "2025-10-06T12:35:00Z"
+    },
+    {
+        "questionId": 3,
+        text: "In the context of modern web development, which of the following frameworks or technologies would you choose for building a highly scalable, maintainable, and performant web application? Consider backend, frontend, and full-stack solutions.",
+        marks: 5,
+        isCheckbox: true,
+        options: [
+            {
+                "value": "A",
+                label: "Laravel with Vue.js and Inertia.js for seamless server-side rendering and SPA-like interactivity",
+                isCorrect: true
+            },
+            {
+                "value": "B",
+                label: "Symfony with Twig templates for robust backend architecture but minimal frontend dynamic features",
+                isCorrect: false
+            },
+            {
+                "value": "C",
+                label: "CodeIgniter combined with plain JavaScript for lightweight applications with minimal overhead",
+                isCorrect: false
+            },
+            {
+                "value": "D",
+                label: "Zend Framework with custom frontend for enterprise-level solutions requiring strict modularity",
+                isCorrect: false
+            }
+        ]
     }
+
 ]
 
