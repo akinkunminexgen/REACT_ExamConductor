@@ -1,6 +1,6 @@
 import Body from "../Components/Panels/Body";
 import InputText from "../Components/InputText";
-import { FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
+import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
 import { adminQuestionLoad, exam } from '../Data';
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
@@ -8,6 +8,8 @@ import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
 import Error from "../Components/Error";
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { downloadCSV } from "../Helper/CsvHelper";
+
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
@@ -18,22 +20,33 @@ export default function Question() {
     const [rowData, setRowData] = useState([]);
     const [modalIsOpenForEdit, setModalIsOpenForEdit] = useState(false);
     const [modalIsOpenForCreate, setModalIsOpenForCreate] = useState(false);
+    const [modalIsOpenForCsv, setModalIsOpenForCsv] = useState(false);
     const [selectedQuestion, setSelectedQuestion] = useState([]);
     const [retrieveOptions, setRetrieveOptions] = useState({A : []});
     const [studentName, setStudentName] = useState("");
     const [error, setError] = useState(null);
     const [inputTag, setInputTag] = useState(["A"]);
+    const [csvFile, setCsvFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         setRowData(adminQuestionLoad);
     }, []);
 
+
+    const importCsv = () => {
+        setCsvFile(null)
+        setModalIsOpenForCsv(true);
+        setError(null);
+        return;
+    }
+
     const createQuestion = () => {
         setModalIsOpenForCreate(true);
-        //console.log(selectedQuestion)
         setSelectedQuestion([]);
         setRetrieveOptions({ A: [] });
         setInputTag(["A"]);
+        setError(null);
         return;
     }
 
@@ -51,7 +64,7 @@ export default function Question() {
         
         let newVal = [];        
 
-        //this login help to put both input text and checkbox together
+        //this logic helps to put both input text and checkbox together
         if (!forCheckbox) {
             newVal = [value, false];
         } else {
@@ -85,6 +98,49 @@ export default function Question() {
             updatedOptions[index].label = value;
             return { ...prev, options: updatedOptions };
         });
+    };
+
+    const TemplateDownloader = () => (
+        downloadCSV(rowData, [], "Question_Template")
+    );
+
+    const handleCsvSave = async () => {
+        const file = csvFile;
+        if (!file) {
+            setError("Please upload a CSV file.");
+            return
+        }
+        if (file.type !== "text/csv" && !file.name.endsWith(".csv")) {
+            setError("Please upload a valid CSV file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", csvFile);
+
+        try
+        {
+            setUploading(true);
+            const response = await fetch(`/api/questions/upload-csv/`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok)
+                throw new Error("Failed to save the question.");
+
+            const updatedQuestion = await response.json();
+            //data has to be inserted into set rowData
+            setRowData(updatedQuestion);
+
+            //console.log("Response:", response.data);
+        } catch (error) {
+            setError("Error uploading CSV file.");
+            setModalIsOpenForCsv(false);
+        } finally {
+            setUploading(false);
+            setModalIsOpenForCsv(false);
+        }
     };
 
     const handleCreateSave = () => {
@@ -201,7 +257,7 @@ export default function Question() {
                     <Button
                         color="danger"
                         size="sm"
-                        onClick={() => handleDelete(params.data)}
+                        onClick={() => handleD(params.data)}
                     >
                         <FaTimes />
                     </Button>
@@ -232,11 +288,21 @@ export default function Question() {
             <Body>
                 <div className="ag-theme-alpine row" >
 
-                    <div className="col-12 py-2" >
+                    <div className="col-6 py-2 text-left" >
                         <div className="d-flex gap-2">
-                            <Button size="sm" color="primary" title="Add Student" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }} onClick={createQuestion}><FaPlus className="me-1" /></Button>
-                            <Button size="sm" color="secondary" title="Import CSV" style={{ backgroundColor: "#64748b", borderColor: "#64748b", color: "#fff" }}> <FaFileImport className="me-1" /></Button>
+                            <Button size="sm" color="primary" title="Add Question" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }} onClick={createQuestion}><FaPlus className="me-1" /></Button>
+                            <Button size="sm" color="secondary" title="Import CSV" style={{ backgroundColor: "#64748b", borderColor: "#64748b" }} onClick={importCsv}> <FaFileImport className="me-1" /></Button>
                             <Button size="sm" color="success" title="Export Excel" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}><FaFileExport className="me-1" /></Button>
+                        </div>
+                    </div>
+                    <div className="col-6 py-2 text-end" >
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button size="sm" color="primary"
+                                title="Download Template"
+                                style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }}
+                                onClick={TemplateDownloader}>
+                                <FaDownload className="me-1" /> Download Template
+                            </Button>
                         </div>
                     </div>
                     <div className="col-12" style={gridStyle}>
@@ -250,6 +316,50 @@ export default function Question() {
                         />
                     </div>
                 </div>
+
+                {/* this is the Importing questions from CSV */}
+                <Modal
+                    isOpen={modalIsOpenForCsv}
+                    style={{ content: { maxWidth: "100%", maxHeight: "65%", margin: "auto", overflow: "auto" } }}
+                    onRequestClose={() => setModalIsOpenForCreate(false)}
+                    contentLabel="Create Question"
+                    className="my-modal-content"
+                    overlayClassName="my-modal-overlay"
+                >
+                    <div className="p-3">
+                        <h5 className="mb-3">Import Questions</h5>
+
+                        {/* Error Toast */}
+                        <Error errorMessage={error} />
+
+                        <Form>
+                            {/* Question Text */}
+                            <FormGroup>
+                                <Label for="text">Upload file</Label>
+                                <Input
+                                    type="file"
+                                    name="text"
+                                    id="text"
+                                    onChange={(e) => {
+                                        const file = e.target.files[0];                                        
+                                        setCsvFile(file);                                      
+                                    }}
+                                    style={{
+                                        fontSize: "0.9rem",
+                                    }}
+                                    placeholder="Enter your question here"
+                                />
+                            </FormGroup>
+                            < div className="d-flex justify-content-end gap-2 mt-3">
+                                <Button color="secondary" onClick={() => setModalIsOpenForCsv(false)}>Cancel</Button>
+                                {csvFile && (                        
+                                    <Button color="primary" onClick={handleCsvSave}>{uploading ? "Uploading..." : "Upload CSV"}</Button>
+                                )}
+                            </div>
+                           
+                        </Form>
+                    </div>
+                </Modal>
 
 
                 {/* this is the Create question Modal */}
