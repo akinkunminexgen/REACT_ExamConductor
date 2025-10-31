@@ -7,7 +7,7 @@ export const downloadCSV = (headers = [], data = [], filename = "template.csv") 
         csvRows.push(headers[0].keys.join(","));
 
         // Add data (optional)
-        headers.forEach(row => csvRows.push(row.values.join(",")))
+        headers.forEach(row => csvRows.push(row.values.join(",")));
     } else {
         if (headers.length > 0) csvRows.push(headers.join(","));
 
