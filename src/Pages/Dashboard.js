@@ -18,6 +18,12 @@ export default function Dashboard() {
     if (redirectTo) {
        return <Navigate to={redirectTo} />;
     }
+    const examStart = (theDate) => {
+        return ((new Date(theDate) - now) / (1000 * 60)) >= 10;
+    }
+    const examClosed = (theDate) => {
+        return ((new Date(theDate) - now) / (1000 * 60)) >= -90;
+    }
 
 
     return (
@@ -35,10 +41,16 @@ export default function Dashboard() {
                                     </CardHeader>
                                 <CardBody>
                                         {new Date(exam.Date).toLocaleString()}
+                                        {examStart(exam.Date) && (
+                                            <>
+                                                <br />
+                                                Starting in <span style={{ color: "red" }}>{Math.floor(((new Date(exam.Date) - new Date()) / (1000 * 60)) - 10)}</span> mins
+                                            </>
+                                        )}
                                     </CardBody>
                                     <CardFooter className="text-right">
-                                        <Button size="sm" color={((new Date(exam.Date) - now) / (1000 * 60)) >= 30 ? "info" : "success"} onClick={() => startExam(exam.examId)} disabled={((new Date(exam.Date) - now) / (1000 * 60)) >= 30}>
-                                            Start
+                                        <Button size="sm" color={examStart(exam.Date) || !examClosed(exam.Date) ? "info" : "success"} onClick={() => startExam(exam.examId)} disabled={(examStart(exam.Date) || !examClosed(exam.Date))}>
+                                            {examClosed(exam.Date) ? 'Start':'Closed' }
                                         </Button>
                                     </CardFooter>
                                  </Card>

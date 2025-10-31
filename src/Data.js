@@ -1,77 +1,147 @@
-const options = [ 
-    { value: "A", label: "A. Laravel" },
-    { value: "B", label: "B. Flask" },
-    { value: "C", label: "C. Django" },
-    { value: "D", label: "D. React" },
-    { value: "E", label: "E. Ruby on Rails" },
-];
-
-
-const questions = [
+export const questions = [
     {
         questionId: "Q1",
         text: "Which framework is based on PHP?",
-        options: [...options],
+        options: [
+            { value: "A", label: "A. Laravel" },
+            { value: "B", label: "Symfony" },
+            { value: "C", label: "CodeIgniter" },
+            { value: "D", label: "Zend" },
+        ],
         correctAnswer: "A",
-        studentAnswer: "A",
+        studentAnswer: "",
         marks: 5,
-        isCheckbox: true
+        isCheckbox: false
     },
     {
         questionId: "Q2",
         text: "Which one is a Python-based micro web framework?",
-        options: [...options],
+        options: [
+            { value: "A", label: "Bottle" },
+            { value: "B", label: "Flask" },
+            { value: "C", label: "CherryPy" },
+            { value: "D", label: "Falcon" },
+            { value: "E", label: "Eagle" },
+        ],
         correctAnswer: "B",
-        studentAnswer: "A",
+        studentAnswer: "",
         marks: 5,
         isCheckbox: false
     },
     {
         questionId: "Q3",
         text: "Which framework is a high-level Python web framework?",
-        options: [...options],
+        options: [
+            { value: "A", label: "Pyramid" },
+            { value: "B", label: "Flask" },
+            { value: "C", label: "Django" },
+            { value: "D", label: "Tornado" },
+        ],
         correctAnswer: "C",
-        studentAnswer: "A",
+        studentAnswer: "",
         marks: 5,
         isCheckbox: false
     },
     {
         questionId: "Q4",
-        text: "In the context of modern web development, developers often utilize various tools, frameworks, and libraries to enhance the efficiency and scalability of building interactive user interfaces. Among the options listed below, identify the one that is specifically classified as a JavaScript library designed primarily for constructing and managing user interface components, often used in the development of single-page applications (SPAs). Which option best fits this description ? ",
-        options: [...options],
+        text: "Which library is used for building dynamic single-page applications (SPAs) in JavaScript?",
+        options: [
+            { value: "A", label: "Vue.js" },
+            { value: "B", label: "Angular" },
+            { value: "C", label: "Svelte" },
+            { value: "D", label: "React" },
+        ],
         correctAnswer: "D",
-        studentAnswer: "A",
+        studentAnswer: "",
         marks: 5,
         isCheckbox: false
     },
     {
         questionId: "Q5",
-        text: "Which of the following is a full-stack web framework written in Ruby?",
-        options: [...options],
-        correctAnswer: "E",
-        studentAnswer: "A",
+        text: "Which full-stack web framework is written in Ruby?",
+        options: [
+            { value: "A", label: "Sinatra" },
+            { value: "B", label: "Rails" },
+            { value: "C", label: "Hanami" },
+            { value: "D", label: "Padrino" },
+        ],
+        correctAnswer: "B",
+        studentAnswer: "",
         marks: 5,
         isCheckbox: false
     },
     {
         questionId: "Q6",
-        text: "What Language are you familiar with?",
-        options: [...options],
-        correctAnswer: "E",
-        studentAnswer: "A",
+        text: "Which JavaScript frameworks/libraries use a virtual DOM? (Select all that apply)",
+        options: [
+            { value: "A", label: "React" },
+            { value: "B", label: "Vue.js" },
+            { value: "C", label: "Angular" },
+            { value: "D", label: "Svelte" },
+        ],
+        correctAnswer: ["A", "B"],
+        studentAnswer: [],
+        marks: 10,
+        isCheckbox: true
+    },
+    {
+        questionId: "Q7",
+        text: "Which Ruby frameworks emphasize 'convention over configuration'? (Select all that apply)",
+        options: [
+            { value: "A", label: "Rails" },
+            { value: "B", label: "Sinatra" },
+            { value: "C", label: "Hanami" },
+            { value: "D", label: "Padrino" },
+        ],
+        correctAnswer: ["A", "C"],
+        studentAnswer: [],
+        marks: 10,
+        isCheckbox: true
+    },
+    {
+        questionId: "Q8",
+        text: "Which Python framework is best known for rapid development and a clean design?",
+        options: [
+            { value: "A", label: "Django" },
+            { value: "B", label: "Flask" },
+            { value: "C", label: "FastAPI" },
+            { value: "D", label: "Tornado" },
+        ],
+        correctAnswer: "A",
+        studentAnswer: "",
         marks: 5,
         isCheckbox: false
     },
     {
-        questionId: "Q7",
-        text: "linked with a corresponding Power BI workspace?",
-        options: [...options],
-        correctAnswer: "E",
-        studentAnswer: "A",
+        questionId: "Q9",
+        text: "Which JavaScript library is often paired with Redux for state management?",
+        options: [
+            { value: "A", label: "React" },
+            { value: "B", label: "Vue.js" },
+            { value: "C", label: "Svelte" },
+            { value: "D", label: "Angular" },
+        ],
+        correctAnswer: "A",
+        studentAnswer: "",
         marks: 5,
         isCheckbox: false
     },
+    {
+        questionId: "Q10",
+        text: "Which lightweight Python framework is commonly used for building APIs quickly?",
+        options: [
+            { value: "A", label: "Bottle" },
+            { value: "B", label: "Flask" },
+            { value: "C", label: "Falcon" },
+            { value: "D", label: "CherryPy" },
+        ],
+        correctAnswer: "B",
+        studentAnswer: "",
+        marks: 5,
+        isCheckbox: false
+    }
 ];
+
 
 export const exams = [
     {
@@ -82,7 +152,7 @@ export const exams = [
         "totalMarks": 100,
         "durationMinutes": 500,
         "questionPerPage": 3,
-        "Date": "2025-06-16T17:00:00",
+        "Date": "2025-08-21T11:30:00",
         "student": {
             "studentId": "S123456",
             "fullName": "John Smith",
@@ -98,7 +168,7 @@ export const exams = [
         "totalMarks": 100,
         "durationMinutes": 500,
         "questionPerPage": 4,
-        "Date": "2025-06-16T17:00:00",
+        "Date": "2025-10-06T15:45:00",
         "student": {
             "studentId": "S123456",
             "fullName": "John Smith",
@@ -329,3 +399,64 @@ export const student = [
     }
 
 ]
+
+export const adminQuestionLoad = [
+    {
+        "questionId": 1,
+        "text": "Which framework is based on PHP?",
+        "marks": 5,
+        "isCheckbox": false,
+        "options": [
+            { "value": "A", "label": "Laravel", "isCorrect": true },
+            { "value": "B", "label": "Symfony", "isCorrect": false },
+            { "value": "C", "label": "CodeIgniter", "isCorrect": false },
+            { "value": "D", "label": "Zend", "isCorrect": false }
+        ],
+        "createdAt": "2025-10-06T12:00:00Z",
+        "updatedAt": "2025-10-06T12:30:00Z"
+    },
+    {
+        "questionId": 2,
+        "text": "Which JavaScript libraries use a virtual DOM? (Select all that apply)",
+        "marks": 10,
+        "isCheckbox": true,
+        "options": [
+            { "value": "A", "label": "React", "isCorrect": true },
+            { "value": "B", "label": "Vue.js", "isCorrect": true },
+            { "value": "C", "label": "Angular", "isCorrect": false },
+            { "value": "D", "label": "Svelte", "isCorrect": false }
+        ],
+        "createdAt": "2025-10-06T12:05:00Z",
+        "updatedAt": "2025-10-06T12:35:00Z"
+    },
+    {
+        "questionId": 3,
+        text: "In the context of modern web development, which of the following frameworks or technologies would you choose for building a highly scalable, maintainable, and performant web application? Consider backend, frontend, and full-stack solutions.",
+        marks: 5,
+        isCheckbox: true,
+        options: [
+            {
+                "value": "A",
+                label: "Laravel with Vue.js and Inertia.js for seamless server-side rendering and SPA-like interactivity",
+                isCorrect: true
+            },
+            {
+                "value": "B",
+                label: "Symfony with Twig templates for robust backend architecture but minimal frontend dynamic features",
+                isCorrect: false
+            },
+            {
+                "value": "C",
+                label: "CodeIgniter combined with plain JavaScript for lightweight applications with minimal overhead",
+                isCorrect: false
+            },
+            {
+                "value": "D",
+                label: "Zend Framework with custom frontend for enterprise-level solutions requiring strict modularity",
+                isCorrect: false
+            }
+        ]
+    }
+
+]
+
