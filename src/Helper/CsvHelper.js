@@ -4,7 +4,7 @@ export const downloadCSV = (headers = [], data = [], filename = "template.csv") 
     //to confirm if header aslo have body
     if (typeof headers[0] === "object" && headers[0] !== null) {
         // Add headers
-        csvRows.push(headers[0].keys.join(","))
+        csvRows.push(headers[0].keys.join(","));
 
         // Add data (optional)
         headers.forEach(row => csvRows.push(row.values.join(",")))
