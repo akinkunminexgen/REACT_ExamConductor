@@ -1,4 +1,4 @@
-export const downloadCSV = (headers = [], data = [], filename = "template.csv") => {
+export const downloadCSV = (headers, filename = "template.csv") => {
     const csvRows = [];
     const getHeader = [];
 
@@ -12,7 +12,10 @@ export const downloadCSV = (headers = [], data = [], filename = "template.csv") 
         return escaped;
     };
 
-    //to confirm if header aslo have body
+    const toAllowTemplate = typeof headers === 'object' ? true : false;
+    if (toAllowTemplate)
+        headers = [headers]; //to ensure it is in list format
+
     if (typeof headers[0] === "object" && headers[0] !== null) {
 
         Object.entries(headers[0]).forEach((val) => {
@@ -30,7 +33,7 @@ export const downloadCSV = (headers = [], data = [], filename = "template.csv") 
     }
 
     let getBody = [];
-    if (headers.length > 0) {
+    if (headers.length > 0 && !toAllowTemplate) {
         headers.forEach((header) => {
             getBody = [];
             const getTheBody = Object.values(header);

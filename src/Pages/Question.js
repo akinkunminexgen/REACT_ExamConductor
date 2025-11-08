@@ -100,9 +100,10 @@ export default function Question() {
         });
     };
 
-    const TemplateDownloader = () => (
-        downloadCSV(rowData, [], "Question_Template")
-    );
+    const TemplateDownloader = () => {
+        const getOneRowData = rowData[0]; //to always get template;
+        downloadCSV(getOneRowData, "Question_Template");
+    };
 
     const handleCsvSave = async () => {
         const file = csvFile;
