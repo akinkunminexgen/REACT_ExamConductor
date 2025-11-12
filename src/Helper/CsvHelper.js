@@ -1,6 +1,8 @@
-export const downloadCSV = (headers, filename = "template.csv") => {
+export const downloadCSV = (data, filename = "template.csv") => {
     const csvRows = [];
     const getHeader = [];
+
+   
 
     const escapeCSV = (value) => {
         if (value === null || value === undefined) return "";
@@ -12,19 +14,49 @@ export const downloadCSV = (headers, filename = "template.csv") => {
         return escaped;
     };
 
-    const toAllowTemplate = typeof headers === 'object' ? true : false;
-    if (toAllowTemplate)
-        headers = [headers]; //to ensure it is in list format
+    const getHighestOptionLength = (getData) => {
+        let maxLength = 0;
+        let maxIndex = -1;
 
-    if (typeof headers[0] === "object" && headers[0] !== null) {
+        getData.forEach((opt, i) => {
+            if (!opt || !Array.isArray(opt.options))
+                return;
 
-        Object.entries(headers[0]).forEach((val) => {
+            if (opt.options.length > maxLength) {
+                maxLength = opt.options.length;
+                maxIndex = i;
+            }
+        });
+
+        return maxIndex;
+    };
+
+    const toAllowTemplate = typeof data === 'object' && !Array.isArray(data) ? true : false;
+    let getPosition = 0;
+    if (toAllowTemplate) {
+        data = [data]; //to ensure it is in list format for template.csv
+    } else {
+        const getOptionLength = getHighestOptionLength(data);
+        getPosition = getOptionLength === -1 ? 0 : getOptionLength;
+    }
+        
+
+    
+
+    if (typeof data[getPosition] === "object" && data[getPosition] !== null) {
+
+        Object.entries(data[getPosition]).forEach((val) => {
             if (!Array.isArray(val[1]))
                 getHeader.push(escapeCSV(val[0]))
                 
             if (Array.isArray(val[1]) && typeof val[1][0] == 'object') {
                 const theOptionHeader = val[1].map((v, k) => {
+                    if (!v.value)
+                        return; // this is only meant for options in a question component
                     getHeader.push(escapeCSV(v.value));
+
+                    if (k === (val[1].length - 1))
+                        getHeader.push(escapeCSV("Answers"));
                 });
             }            
         });
@@ -33,23 +65,34 @@ export const downloadCSV = (headers, filename = "template.csv") => {
     }
 
     let getBody = [];
-    if (headers.length > 0 && !toAllowTemplate) {
-        headers.forEach((header) => {
+    const toAllowSpace = data[getPosition].options && Array.isArray(data[getPosition].options) ?  data[getPosition].options.length : 0;
+    
+    if (data.length > 0 && !toAllowTemplate) {
+        data.forEach((body) => {
             getBody = [];
-            const getTheBody = Object.values(header);
+            const getTheBody = Object.values(body);
             getTheBody.forEach((val, key) => {
+                let getTheAnswers = "";
                 if (!Array.isArray(val)) {
                     getBody.push(escapeCSV(val));
                 }
                 if (Array.isArray(val) && typeof val[0] == 'object') {
-                    val.forEach((v, k) => {
+                    val.forEach((v, k) => {                        
+                        if (!v.value)
+                            return; // this is only meant for options in a question component
+
                         getBody.push(escapeCSV(v.label));
-                    });
+                        if (toAllowSpace != val.length && k === val.length - 1)
+                            getBody.push(""); //incase the length of options is lesser than that of the highest
+
+                        getTheAnswers += v.isCorrect ? v.value : "";
+                        if (k === val.length - 1)
+                            getBody.push(escapeCSV(getTheAnswers));
+                    }); 
                 }
-            });
+            }); 
             csvRows.push(getBody.join(","));
         });        
-        
     };
     
     const csvContent = csvRows.join("\n");

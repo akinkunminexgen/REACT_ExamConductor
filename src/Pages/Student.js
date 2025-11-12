@@ -1,10 +1,12 @@
 import Body from "../Components/Panels/Body";
 import { student, exam } from '../Data';
+import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "reactstrap";
+import { downloadCSV } from "../Helper/CsvHelper";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
@@ -32,6 +34,10 @@ export default function Student() {
         return;
     }
 
+    const TemplateDownloader = () => {
+        const getOneRowData = rowData; //to always get template;
+        downloadCSV(getOneRowData, "Student_Template");
+    };
     //console.log(rowData);
 
     
@@ -85,11 +91,21 @@ export default function Student() {
         <Body>
             <div className="ag-theme-alpine row" >
 
-                <div className="col-12 py-2" >
+                <div className="col-6 py-2 text-left" >
                     <div className="d-flex gap-2">
-                        <Button color="primary" title="Add Student" onClick={createStudent}>+</Button>
-                        <Button size="sm" color="secondary">Import</Button>
-                        <Button size="sm" color="success">Export</Button>
+                        <Button size="sm" color="primary" title="Add Question" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }}><FaPlus className="me-1" /></Button>
+                        <Button size="sm" color="secondary" title="Import CSV" style={{ backgroundColor: "#64748b", borderColor: "#64748b" }} > <FaFileImport className="me-1" /></Button>
+                        <Button size="sm" color="success" title="Export Excel" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}><FaFileExport className="me-1" /></Button>
+                    </div>
+                </div>
+                <div className="col-6 py-2 text-end" >
+                    <div className="d-flex justify-content-end gap-2">
+                        <Button size="sm" color="primary"
+                            title="Download Template"
+                            style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }}
+                            onClick={TemplateDownloader}>
+                            <FaDownload className="me-1" /> Download Template
+                        </Button>
                     </div>
                 </div>
                 <div className="col-12" style={gridStyle}>

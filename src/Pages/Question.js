@@ -101,7 +101,7 @@ export default function Question() {
     };
 
     const TemplateDownloader = () => {
-        const getOneRowData = rowData[0]; //to always get template;
+        const getOneRowData = rowData; //to always get template;
         downloadCSV(getOneRowData, "Question_Template");
     };
 

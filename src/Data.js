@@ -438,12 +438,12 @@ export const adminQuestionLoad = [
             {
                 "value": "A",
                 label: "Laravel with Vue.js and Inertia.js for seamless server-side rendering and SPA-like interactivity",
-                isCorrect: true
+                isCorrect: false
             },
             {
                 "value": "B",
                 label: "Symfony with Twig templates for robust backend architecture but minimal frontend dynamic features",
-                isCorrect: false
+                isCorrect: true
             },
             {
                 "value": "C",
@@ -453,9 +453,16 @@ export const adminQuestionLoad = [
             {
                 "value": "D",
                 label: "Zend Framework with custom frontend for enterprise-level solutions requiring strict modularity",
+                isCorrect: true
+            },
+            {
+                "value": "E",
+                label: "Zend Framewohddj jknjdhsgfjn dnhdfjndf hfd arity",
                 isCorrect: false
             }
-        ]
+        ],
+        "createdAt": "2025-10-06T12:05:00Z",
+        "updatedAt": "2025-10-06T12:35:00Z"
     }
 
 ]
