@@ -6,7 +6,7 @@ export default function InputText({ value, name, onChange, label, forCheckBox, o
                    
             <>
             <div className="input-group input-group mb-3 ">
-                <span className="input-group-text">{label}
+                <span className="input-group-text small-font">{label}
                     <input
                         checked={forCheckBox ?? false}
                         onChange={onChangeForCheckBox}

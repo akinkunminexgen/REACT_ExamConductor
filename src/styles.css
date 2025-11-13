@@ -204,3 +204,15 @@ body {
 .flyout-menu li {
     padding-left: 1rem !important;
 }
+
+.form-control, .small-font {
+    font-size: 0.68rem !important;
+}
+
+.general-small-font {
+    font-size: 0.8rem !important;
+}
+
+.ml-minus-1 {
+    margin-left: -0.90rem;
+}

@@ -1,12 +1,15 @@
 import Body from "../Components/Panels/Body";
+import StudentForm  from "../Components/Utils/StudentForm";
 import { student, exam } from '../Data';
 import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
-import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "reactstrap";
+import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { downloadCSV } from "../Helper/CsvHelper";
+import Error from "../Components/Error";
+
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
@@ -16,8 +19,10 @@ export default function Student() {
 
     const [rowData, setRowData] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalIsOpenForCreate, setModalIsOpenForCreate] = useState(false);
     const [selectedExams, setSelectedExams] = useState([]);
     const [studentName, setStudentName] = useState("");
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         setRowData(student);
@@ -31,6 +36,8 @@ export default function Student() {
     };
 
     const createStudent = () => {
+        setModalIsOpenForCreate(true);
+        setError(null);
         return;
     }
 
@@ -93,7 +100,7 @@ export default function Student() {
 
                 <div className="col-6 py-2 text-left" >
                     <div className="d-flex gap-2">
-                        <Button size="sm" color="primary" title="Add Question" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }}><FaPlus className="me-1" /></Button>
+                        <Button size="sm" color="primary" title="Add Question" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }} onClick={createStudent}><FaPlus className="me-1" /></Button>
                         <Button size="sm" color="secondary" title="Import CSV" style={{ backgroundColor: "#64748b", borderColor: "#64748b" }} > <FaFileImport className="me-1" /></Button>
                         <Button size="sm" color="success" title="Export Excel" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}><FaFileExport className="me-1" /></Button>
                     </div>
@@ -119,6 +126,20 @@ export default function Student() {
                     />
                 </div>
             </div>
+
+            {/* this is the Create question Modal */}
+            <Modal
+                isOpen={modalIsOpenForCreate}
+                style={{ content: { maxWidth: "100%", maxHeight: "65%", margin: "auto", overflow: "auto" } }}
+                onRequestClose={() => setModalIsOpenForCreate(false)}
+                contentLabel="Create Question"
+                className="my-modal-content"
+                overlayClassName="my-modal-overlay"
+            >
+                <StudentForm setModalOpen={setModalIsOpenForCreate} />
+            </Modal>
+
+            {/* this is view student info */}
             <Modal isOpen={modalIsOpen}
                 style={{ content: { maxWidth: "90%", maxHeight: "60%", margin: "auto", overflow: "auto" } }}
                 onRequestClose={() => setModalIsOpen(false)}
