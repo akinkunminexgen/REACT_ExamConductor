@@ -130,7 +130,7 @@ export default function Student() {
             {/* this is the Create question Modal */}
             <Modal
                 isOpen={modalIsOpenForCreate}
-                style={{ content: { maxWidth: "100%", maxHeight: "65%", margin: "auto", overflow: "auto" } }}
+                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                 onRequestClose={() => setModalIsOpenForCreate(false)}
                 contentLabel="Create Question"
                 className="my-modal-content"
@@ -141,7 +141,7 @@ export default function Student() {
 
             {/* this is view student info */}
             <Modal isOpen={modalIsOpen}
-                style={{ content: { maxWidth: "90%", maxHeight: "60%", margin: "auto", overflow: "auto" } }}
+                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                 onRequestClose={() => setModalIsOpen(false)}
                 contentLabel="Assigned Exams Modal"
                 className="my-modal-content"

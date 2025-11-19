@@ -81,6 +81,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1050;
 }
 
 .my-modal-content {
@@ -91,6 +92,7 @@ body {
     padding: 40px;
     border-radius: 10px;
     outline: none;
+    z-index: 1100;
 }
 
 .question-border {

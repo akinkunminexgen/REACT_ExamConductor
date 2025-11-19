@@ -1,5 +1,6 @@
 import Body from "../Components/Panels/Body";
 import InputText from "../Components/InputText";
+import QuestionForm from "../Components/Utils/QuestionForm";
 import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
 import { adminQuestionLoad, exam } from '../Data';
 import { useEffect, useState, useMemo } from "react";
@@ -25,7 +26,6 @@ export default function Question() {
     const [retrieveOptions, setRetrieveOptions] = useState({A : []});
     const [studentName, setStudentName] = useState("");
     const [error, setError] = useState(null);
-    const [inputTag, setInputTag] = useState(["A"]);
     const [csvFile, setCsvFile] = useState(null);
     const [uploading, setUploading] = useState(false);
 
@@ -41,46 +41,6 @@ export default function Question() {
         return;
     }
 
-    const createQuestion = () => {
-        setModalIsOpenForCreate(true);
-        setSelectedQuestion([]);
-        setRetrieveOptions({ A: [] });
-        setInputTag(["A"]);
-        setError(null);
-        return;
-    }
-
-    const includeInputText = () => {
-        const alp = "ABCDEFG";
-        const nextChar = alp[inputTag.length];
-        //console.log(retrieveOptions);
-
-        if (!nextChar) return;
-        setInputTag((prev) => [...prev, nextChar]);
-        setRetrieveOptions((prev) => ({...prev, [nextChar] : ["", false] }))
-    }
-
-    const toGetOptions = (value, key, forCheckbox=false) => {
-        
-        let newVal = [];        
-
-        //this logic helps to put both input text and checkbox together
-        if (!forCheckbox) {
-            newVal = [value, false];
-        } else {
-            //ensure multiple options can be clicked only if electedQuestion.isCheckBox is true
-            if (!selectedQuestion.isCheckbox && value) {
-                const confirm = Object.entries(retrieveOptions).some(([key, value]) => value[1] === true);
-                if (confirm) {
-                    setError("You need to enable multiple answer!");
-                    return;
-                }
-            }
-            newVal = [retrieveOptions[key][0], value];
-        }
-        setRetrieveOptions((p) => ({ ...p, [key]: newVal }));
-        return;
-    }
 
     const handleAQuestion = (question) => {
         setSelectedQuestion({ ...question });
@@ -144,19 +104,6 @@ export default function Question() {
         }
     };
 
-    const handleCreateSave = () => {
-        const optionArray = Object.entries(retrieveOptions).map((val, i) => ({
-            value: val[0],
-            label: val[1][0],
-            isCorrect: val[1][1],
-        }));
-        const latestQuestion = {
-            ...selectedQuestion, questionId: `Q-${rowData.length}`, options: optionArray || []
-        }
-        setSelectedQuestion(latestQuestion);
-        //console.log(selectedQuestion); still the old state
-        handleSave(latestQuestion);
-    }
 
     const handleSave = async (theQuestion) => {
         try {
@@ -173,19 +120,37 @@ export default function Question() {
 
             const updatedQuestion = await response.json();
 
-            setRowData((prev) =>
-                prev.map((q) =>
-                    q.questionId === updatedQuestion.questionId ? updatedQuestion : q
-                )
-            );
+            setRowData(prev => {
+                const exists = prev.some(q => q.questionId === updatedQuestion.questionId);
+
+                if (exists) {
+                    return prev.map(q =>
+                        q.questionId === updatedQuestion.questionId ? updatedQuestion : q
+                    );
+                } else {
+                    // Add new question
+                    return [...prev, updatedQuestion];
+                }
+            });
 
             // Close modal
             setModalIsOpenForEdit(false);
             setError(null);
         } catch (err) {
-            setRowData((prev) => ([ ...prev, theQuestion ])
-               
-            );
+
+            //this to be removed later-just for testing
+            setRowData(prev => {
+                const exists = prev.some(q => q.questionId === theQuestion.questionId);
+
+                if (exists) {
+                    return prev.map(q =>
+                        q.questionId === theQuestion.questionId ? theQuestion : q
+                    );
+                } else {
+                    // Add new question
+                    return [...prev, theQuestion];
+                }
+            });
             console.error("Error saving question:", rowData);
             setError((prev) => `errorihfkehidfvnhj${theQuestion.questionId}`);
             //setModalIsOpenForCreate(false);
@@ -291,7 +256,7 @@ export default function Question() {
 
                     <div className="col-6 py-2 text-left" >
                         <div className="d-flex gap-2">
-                            <Button size="sm" color="primary" title="Add Question" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }} onClick={createQuestion}><FaPlus className="me-1" /></Button>
+                            <Button size="sm" color="primary" title="Add Question" style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }} onClick={() => setModalIsOpenForCreate(true)}><FaPlus className="me-1" /></Button>
                             <Button size="sm" color="secondary" title="Import CSV" style={{ backgroundColor: "#64748b", borderColor: "#64748b" }} onClick={importCsv}> <FaFileImport className="me-1" /></Button>
                             <Button size="sm" color="success" title="Export Excel" style={{ backgroundColor: "#16a34a", borderColor: "#16a34a" }}><FaFileExport className="me-1" /></Button>
                         </div>
@@ -321,7 +286,7 @@ export default function Question() {
                 {/* this is the Importing questions from CSV */}
                 <Modal
                     isOpen={modalIsOpenForCsv}
-                    style={{ content: { maxWidth: "100%", maxHeight: "65%", margin: "auto", overflow: "auto" } }}
+                    style={{ content: { width: "50%", maxWidth: "700px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                     onRequestClose={() => setModalIsOpenForCreate(false)}
                     contentLabel="Create Question"
                     className="my-modal-content"
@@ -366,114 +331,23 @@ export default function Question() {
                 {/* this is the Create question Modal */}
                 <Modal
                     isOpen={modalIsOpenForCreate}
-                    style={{ content: { maxWidth: "100%", maxHeight: "65%", margin: "auto", overflow: "auto" } }}
+                    style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                     onRequestClose={() => setModalIsOpenForCreate(false)}
                     contentLabel="Create Question"
                     className="my-modal-content"
                     overlayClassName="my-modal-overlay"
                 >
-                    <div className="p-3">
-                        <h5 className="mb-3">Create Question</h5>
-
-                        {/* Error Toast */}
-                        <Error errorMessage={error} />
-
-                        <Form>
-                            {/* Question Text */}
-                            <FormGroup>
-                                <Label for="text">Question Text</Label>
-                                <Input
-                                    type="textarea"
-                                    name="text"
-                                    id="text"
-                                    rows={4} // 7 lines
-                                    value={selectedQuestion.text || ""}
-                                    onChange={handleInputChange}
-                                    style={{
-                                        fontSize: "0.9rem",  // optional: smaller font
-                                    }}
-                                    placeholder="Enter your question here"
-                                />
-                            </FormGroup>
-
-                            <FormGroup >
-                                <Row >
-                                    <div className="col-auto">
-                                        <Label className="fw-semibold text-secondary mb-0">Marks Allocated:</Label>
-                                    </div>
-                                    <div className="col-auto">
-                                        <Input
-                                            type="number"
-                                            name="marks"
-                                            min="1"
-                                            max="5"
-                                            value={selectedQuestion.marks || ""}
-                                            onChange={handleInputChange}
-                                            style={{ width: "100px" }}
-                                            className="rounded-3 border-1 shadow-sm px-2 form-control-sm"
-                                            placeholder="e.g. 5"
-                                        />
-                                    </div>
-                                    <div className="col-auto">
-                                        <Label className="fw-semibold text-secondary mb-0"><i className="bi bi-123 text-primary"> Is it Multiple Answer?</i></Label>
-                                    </div>
-                                    <div className="col-auto">
-                                        <Input
-                                            type="checkbox"
-                                            name="isCheckbox"
-                                            checked={selectedQuestion.isCheckbox || false}
-                                            onChange={(e) =>
-                                                setSelectedQuestion((prev) => ({ ...prev, isCheckbox: e.target.checked }))
-                                            }
-                                        />   
-                                    </div>                                         
-                                                                               
-                                </Row> 
-                            </FormGroup>
-
-                            <FormGroup >
-                                {inputTag.map((opt, i) => (                                     
-
-                                
-                                    <Row key={`Option${i}`} style={{ paddingTop: "4px", paddingBottom: "4px", transform: "scale(0.95)" }}>
-                                        <Col sm="9" >
-                                            <InputText
-                                                value={retrieveOptions[opt][0] || ""}
-                                                name={`Option${opt}`}
-                                                onChange={(e) => toGetOptions(e.target.value, opt)}
-                                                label={`Option ${opt}`}
-                                                forCheckBox={retrieveOptions[opt][1]}
-                                                onChangeForCheckBox={(e) => toGetOptions(e.target.checked, opt, true)}
-                                            />
-                                        </Col>
-                                        {i === inputTag.length-1 &&
-                                            <Col sm="3" className="text-end">
-                                                <Button
-                                                    size="sm"
-                                                    color="primary"
-                                                    title="Add Student"
-                                                    style={{ backgroundColor: "#3d5987", borderColor: "#4f46e5" }}
-                                                    onClick={includeInputText}><FaPlus /></Button>
-                                            </Col>
-                                        }
-                                    </Row>
-                                ))}
-                            </FormGroup>
-
-                            {/* Modal Buttons */}
-                            <div className="d-flex justify-content-end gap-2 mt-3">
-                                <Button color="secondary" onClick={() => setModalIsOpenForCreate(false)}>Cancel</Button>
-                                <Button color="primary" onClick={handleCreateSave}>Save</Button>
-                            </div>
-                        </Form>
-                    </div>
+                    <QuestionForm
+                        setModalOpen={setModalIsOpenForCreate}
+                        handleSave={handleSave}
+                        rowDataLength={rowData?.length}/>
                 </Modal>
 
                 {/* this is the end */}
 
                 {/* this is the Edit question Modal */}
                 <Modal isOpen={modalIsOpenForEdit}
-                    style={{ content: { maxWidth: "100%", maxHeight: "65%", margin: "auto", overflow: "auto" } }}
+                    style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                     onRequestClose={() => setModalIsOpenForEdit(false)}
                     contentLabel="Edit Question"
                     className="my-modal-content"
