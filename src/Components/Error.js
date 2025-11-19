@@ -30,7 +30,7 @@ export default function Error({ errorMessage, duration = 5000 }) {
         >
             <Toast>
                 <ToastHeader icon="danger">Error</ToastHeader>
-                <ToastBody>{errorMessage}</ToastBody>
+                <ToastBody>{errorMessage.split(" : ")[0]}</ToastBody>
             </Toast>
         </div>
     );

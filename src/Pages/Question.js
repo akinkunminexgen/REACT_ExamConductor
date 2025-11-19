@@ -340,7 +340,8 @@ export default function Question() {
                     <QuestionForm
                         setModalOpen={setModalIsOpenForCreate}
                         handleSave={handleSave}
-                        rowDataLength={rowData?.length}/>
+                        rowDataLength={rowData?.length}
+                    />
                 </Modal>
 
                 {/* this is the end */}
@@ -353,89 +354,13 @@ export default function Question() {
                     className="my-modal-content"
                     overlayClassName="my-modal-overlay">
                     {selectedQuestion && (
-                        <Form>
-                            <h5 className="mb-3">Edit Question</h5>
-                            <FormGroup>
-                                <Label for="text">Question Text</Label>
-                                <Input
-                                    type="textarea"
-                                    name="text"
-                                    rows={4}
-                                    font="small"
-                                    id="text"
-                                    value={selectedQuestion.text}
-                                    onChange={handleInputChange}
-                                    style={{
-                                        fontSize: "0.9rem",  // optional: smaller font
-                                    }}
-                                />
-                            </FormGroup>
-                            <FormGroup className="mb-3">
-                                <div className="form-check form-check-inline">
-                                    <Label for="marks" className="fw-semibold text-secondary d-flex align-items-center gap-2">
-                                        <i className="bi bi-123 text-primary"></i> Marks Allocated: 
-                                    </Label>
-                                    <Input
-                                        type="number"
-                                        name="marks"
-                                        id="marks"
-                                        value={selectedQuestion.marks}
-                                        onChange={handleInputChange}
-                                        min="1"
-                                        max="5"
-                                        className="rounded-3 border-1 shadow-sm px-3"
-                                        placeholder="e.g. 5"
-                                        style={{ width: "100px" }}
-                                        />
-                                </div>
-                            </FormGroup>
-                            <FormGroup className="mb-3">
-                                <div className="form-check form-check-inline">
-                                    <Input
-                                        type="checkbox"
-                                        name="isCheckbox"
-                                        id="isCheckbox"
-                                        checked={selectedQuestion.isCheckbox}
-                                        onChange={
-                                                (e) => {
-                                                //console.log(e)
-                                                setSelectedQuestion((prev) => ({
-                                                    ...prev,
-                                                    isCheckbox: e.target.checked,
-                                                }))
-                                            }                                        
-                                        }
-                                        className="form-check-input"
-                                        style={{ transform: "scale(1.5)", cursor: "pointer" }}
-                                    />
-                                    <Label
-                                        for="isCheckbox"
-                                        className="form-check-label fw-semibold text-secondary mb-0"
-                                    >
-                                        <i className="bi bi-123 text-primary"> Is it Multiple Answer?</i> 
-                                    </Label>
-                                </div>
-                            </FormGroup>
-                   
-                            {selectedQuestion.options?.map((opt, i) => (
-                                <FormGroup key={i}>
-                                    <Label>{`Option ${String.fromCharCode(65 + i)}`}</Label>
-                                    <Input
-                                        type="text"
-                                        value={opt.label}
-                                        style={{
-                                            fontSize: "0.75rem",  // optional: smaller font
-                                        }}
-                                        onChange={(e) => handleOptionChange(i, e.target.value)}
-                                    />
-                                </FormGroup>
-                            ))}
-
-                            <div className="d-flex justify-content-end gap-2 mt-3">
-                                <Button color="secondary" onClick={() => setModalIsOpenForEdit(false)}>Cancel</Button>
-                                <Button color="primary" onClick={() => handleSave(selectedQuestion)}>Save</Button>
-                            </div>
-                        </Form>
+                        <QuestionForm
+                            setModalOpen={setModalIsOpenForEdit}
+                            handleSave={handleSave}
+                            rowDataLength={rowData?.length}
+                            toEdit={selectedQuestion}
+                        />
+                       
                     )}
                 </Modal>  
                 {/* The end for Editing questions */}

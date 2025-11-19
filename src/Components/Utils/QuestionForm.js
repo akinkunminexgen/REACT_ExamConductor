@@ -1,16 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, FormGroup, Row, Col, Label, Input, Button } from "reactstrap";
 import Error from "../../Components/Error";
 import InputText from "../../Components/InputText";
 import { FaTimes, FaEdit, FaPlus } from "react-icons/fa";
 
-export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }) {
+export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, toEdit = {} }) {
     const [form, setForm] = useState({});
     const [inputTag, setInputTag] = useState(["A"]);
     const [retrieveOptions, setRetrieveOptions] = useState({ A: [] });
     const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
 
+
+    //function to know if question is being editted
+    const enableEdit = () => {
+        setForm({ ...toEdit })
+
+        const getOptionTag = toEdit.options.map((opt) => opt.value);
+        const getOptionRetrieval = toEdit.options.reduce((acc, opt) => {
+            acc[opt.value] = [opt.label, opt.isCorrect];
+            return acc;
+        }, {});
+
+        setInputTag(getOptionTag);
+        setRetrieveOptions(getOptionRetrieval);
+        console.log(getOptionRetrieval);
+    }
+
+    useEffect(() => {
+        if (toEdit && Object.keys(toEdit).length > 0) {
+            enableEdit();
+        }
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -30,13 +51,14 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
             if (!form.isCheckbox && value) {
                 const confirm = Object.entries(retrieveOptions).some(([key, value]) => value[1] === true);
                 if (confirm) {
-                    setError("You need to enable multiple answer!");
+                    setError(`You need to ce answer! ${Date.now()}`);
                     return;
                 }
             }
             newVal = [retrieveOptions[key][0], value];
         }
         setRetrieveOptions((p) => ({ ...p, [key]: newVal }));
+        console.log(retrieveOptions);
         return;
     }
 
@@ -44,7 +66,6 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
     const includeInputText = () => {
         const alp = "ABCDEFG";
         const nextChar = alp[inputTag.length];
-        //console.log(retrieveOptions);
 
         if (!nextChar) return;
         setInputTag((prev) => [...prev, nextChar]);
@@ -54,11 +75,26 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
 
     const validate = () => {
         let err = {};
+
+        inputTag.forEach((key) => {
+            const opt = retrieveOptions[key];
+            if (!opt || !opt[0]) { 
+                err[key] = "Required";
+            }
+        });
         if (!form.text) err.text = "Required";
         if (!form.marks) err.marks = "Required";
-        if (!retrieveOptions.hasOwnProperty("B") || retrieveOptions.A.length <= 0 || retrieveOptions?.B.length <= 0) {
-            err.option = "Required";
+        if (!retrieveOptions.hasOwnProperty("B") || retrieveOptions.A.length <= 0) {
+            
+            err.B = "Required";
         }
+
+        const checkAnswer = Object.entries(retrieveOptions).some(([key, value]) => value[1] === true);
+        if (!checkAnswer) {
+            err.Answer = "Required";
+            setError(`You need to check atleast one answer! : ${Date.now()}`);
+        }
+
         return err;
     };
 
@@ -80,7 +116,9 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
                 isCorrect: val[1][1],
             }));
             const latestQuestion = {
-                ...form, questionId: rowDataLength, options: optionArray || []
+                ...form,
+                questionId: form.questionId ?? rowDataLength,
+                options: optionArray || []
             }
             setForm(latestQuestion);
 
@@ -115,6 +153,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
                         }}
                         placeholder="Enter your question here"
                     />
+                    {errors.text && <small className="text-danger">{errors.text}</small>}
                 </FormGroup>
 
                 <FormGroup >
@@ -134,6 +173,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
                                 className="rounded-3 border-1 shadow-sm px-2 form-control-sm"
                                 placeholder="e.g. 5"
                             />
+                            {errors.marks && <small className="text-danger">{errors.marks}</small>}
                         </div>
                         <div className="col-auto">
                             <Label className="fw-semibold text-secondary mb-0"><i className="bi bi-123 text-primary"> Is it Multiple Answer?</i></Label>
@@ -166,6 +206,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
                                     forCheckBox={retrieveOptions[opt][1]}
                                     onChangeForCheckBox={(e) => toGetOptions(e.target.checked, opt, true)}
                                 />
+                                {errors[opt] && <small className="text-danger">{errors[opt]}</small>}
                             </Col>
                             {i === inputTag.length - 1 &&
                                 <Col sm="3" className="text-end">
@@ -179,7 +220,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength }
                             }
                         </Row>
                     ))}
-                </FormGroup>
+                </FormGroup >
 
                 {/* Button Row */}
                 <FormGroup>
