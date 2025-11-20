@@ -8,7 +8,8 @@ export default function SideBar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
-        const handleResize = () => setIsCollapsed(window.innerWidth < 992);
+        const handleResize = () => setIsCollapsed(window.innerWidth < 1400);
+        console.log(isCollapsed);
         handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);

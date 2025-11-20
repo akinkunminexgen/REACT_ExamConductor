@@ -55,6 +55,21 @@ export default function QuestionPrompt({ question, answerToSubmit, verifyAnswer 
             
             <Modal isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
+                style={{
+                    content: {
+                        width: "70%",
+                        maxWidth: "1100px",
+                        maxHeight: "90%",
+                        margin: "auto",
+                        overflow: "auto",
+                        padding: "30px",
+                        borderRadius: "8px",
+                    },
+                    overlay: {
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        zIndex: 1000,
+                    },
+                }}
                 className="my-modal-content"
                 overlayClassName="my-modal-overlay">
                 

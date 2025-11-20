@@ -1,27 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormGroup, Label, Input, Button } from "reactstrap";
 
-export default function StudentForm({ setModalOpen }) {
-    const [form, setForm] = useState({
-        studentNumber: "",
-        fullName: "",
-        gender: "",
-        dob: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        grade: "",
-        section: "",
-        parentName: "",
-        relationship: "",
-        parentPhone: "",
-        parentEmail: "",
-        emergencyName: "",
-        emergencyPhone: ""
-    });
-
+export default function StudentForm({ setModalOpen, toEdit = {} }) {
+    const [form, setForm] = useState({});
+    const [readOnlyTag, setReadOnlyTag] = useState(false);
     const [errors, setErrors] = useState({});
+
+    //function to know if question is being editted
+    const enableEdit = () => {
+        setReadOnlyTag(true);
+        setForm({
+            ...toEdit,
+            DateOfBirth: toEdit.DateOfBirth?.split("T")[0] || ""
+        })
+    }
+
+    useEffect(() => {
+        if (toEdit && Object.keys(toEdit).length > 0) {
+            enableEdit();
+        }
+    }, []);
+
+    
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,14 +29,14 @@ export default function StudentForm({ setModalOpen }) {
 
     const validate = () => {
         let err = {};
-        if (!form.studentNumber) err.studentNumber = "Required";
-        if (!form.fullName) err.fullName = "Required";
-        if (!form.email) err.email = "Email required";
-        if (!form.gender) err.gender = "Required";
-        if (!form.dob) err.dob = "DoB required";
-        if (!form.grade) err.grade = "Grade required";
-        if (!form.parentName) err.parentName = "Parent name required";
-        if (!form.emergencyPhone) err.emergencyPhone = "Emergency phone required";
+        if (!form.StudentNumber) err.StudentNumber = "Required";
+        if (!form.FullName) err.FullName = "Required";
+        if (!form.Email) err.Email = "Email required";
+        if (!form.Gender) err.Gender = "Required";
+        if (!form.DateOfBirth) err.dob = "DoB required";
+        if (!form.Grade) err.Grade = "Grade required";
+        if (!form.ParentName) err.ParentName = "Parent name required";
+        if (!form.EmergencyPhone) err.EmergencyPhone = "Emergency phone required";
         return err;
     };
 
@@ -61,14 +61,14 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Student No.</Label></div>
                     <div className="col-4">
-                        <Input name="studentNumber" type="text" value={form.studentNumber} onChange={handleChange} placeholder="Enter student number" />
-                        {errors.studentNumber && <small className="text-danger">{errors.studentNumber}</small>}
+                        <Input name="studentNumber" type="text" value={form.StudentNumber || ""} onChange={handleChange} placeholder="Enter student number" disabled={readOnlyTag} />
+                        {errors.StudentNumber && <small className="text-danger">{errors.StudentNumber}</small>}
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Full Name</Label></div>
                     <div className="col-4">
-                        <Input name="fullName" type="text" value={form.fullName} onChange={handleChange} placeholder="Enter firstname and surname" />
-                        {errors.fullName && <small className="text-danger">{errors.fullName}</small>}
+                        <Input name="fullName" type="text" value={form.FullName || ""} onChange={handleChange} placeholder="Enter firstname and surname" />
+                        {errors.FullName && <small className="text-danger">{errors.FullName}</small>}
                     </div>
                 </div>
             </FormGroup>
@@ -78,17 +78,17 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Gender</Label></div>
                     <div className="col-4">
-                        <Input name="gender" type="select" value={form.gender} onChange={handleChange}>
+                        <Input name="gender" type="select" value={form.Gender ||""} onChange={handleChange}>
                             <option value="">Select</option>
                             <option value="Male"> Male</option>
                             <option value="Female">Female</option>
                         </Input>
-                        {errors.gender && <small className="text-danger">{errors.gender}</small>}
+                        {errors.Gender && <small className="text-danger">{errors.Gender}</small>}
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Date of Birth</Label></div>
                     <div className="col-4">
-                        <Input name="dob" type="date" value={form.dob} onChange={handleChange} />
+                        <Input name="dob" type="date" value={form.DateOfBirth || ""} onChange={handleChange} />
                         {errors.dob && <small className="text-danger">{errors.dob}</small>}
                     </div>
                 </div>
@@ -101,13 +101,13 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Email</Label></div>
                     <div className="col-4">
-                        <Input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Enter email" />
-                        {errors.email && <small className="text-danger">{errors.email}</small>}
+                        <Input name="email" type="email" value={form.Email || ""} onChange={handleChange} placeholder="Enter email" />
+                        {errors.Email && <small className="text-danger">{errors.Email}</small>}
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Phone</Label></div>
                     <div className="col-4">
-                        <Input name="phone" type="text" value={form.phone} onChange={handleChange} placeholder="Enter phone" />
+                        <Input name="phone" type="text" value={form.Phone || ""} onChange={handleChange} placeholder="Enter phone" />
                     </div>
                 </div>
             </FormGroup>
@@ -133,13 +133,13 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Grade</Label></div>
                     <div className="col-4">
-                        <Input name="grade" type="text" value={form.grade} onChange={handleChange} placeholder="Enter grade" />
-                        {errors.grade && <small className="text-danger">{errors.grade}</small>}
+                        <Input name="grade" type="text" value={form.Grade || ""} onChange={handleChange} placeholder="Enter grade" />
+                        {errors.Grade && <small className="text-danger">{errors.Grade}</small>}
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Section</Label></div>
                     <div className="col-4">
-                        <Input name="section" type="text" value={form.section} onChange={handleChange} placeholder="Enter section" />
+                        <Input name="section" type="text" value={form.Section || ""} onChange={handleChange} placeholder="Enter section" />
                     </div>
                 </div>
             </FormGroup>
@@ -151,13 +151,13 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Parent Name</Label></div>
                     <div className="col-4">
-                        <Input name="parentName" type="text" value={form.parentName} onChange={handleChange} placeholder="Enter parent's name" />
-                        {errors.parentName && <small className="text-danger">{errors.parentName}</small>}
+                        <Input name="parentName" type="text" value={form.ParentName || ""} onChange={handleChange} placeholder="Enter parent's name" />
+                        {errors.ParentName && <small className="text-danger">{errors.ParentName}</small>}
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Relationship</Label></div>
                     <div className="col-4">
-                        <Input name="relationship" type="text" value={form.relationship} onChange={handleChange} placeholder="Father / Mother / Guardian" />
+                        <Input name="relationship" type="text" value={form.RelationShip || ""} onChange={handleChange} placeholder="Father / Mother / Guardian" />
                     </div>
                 </div>
             </FormGroup>
@@ -166,12 +166,12 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Parent Phone</Label></div>
                     <div className="col-4">
-                        <Input name="parentPhone" type="text" value={form.parentPhone} onChange={handleChange} placeholder="Enter parent phone" />
+                        <Input name="parentPhone" type="text" value={form.ParentPhone || ""} onChange={handleChange} placeholder="Enter parent phone" />
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Parent Email</Label></div>
                     <div className="col-4">
-                        <Input name="parentEmail" type="email" value={form.parentEmail} onChange={handleChange} placeholder="Enter parent email" />
+                        <Input name="parentEmail" type="email" value={form.ParentEmail || ""} onChange={handleChange} placeholder="Enter parent email" />
                     </div>
                 </div>
             </FormGroup>
@@ -183,12 +183,12 @@ export default function StudentForm({ setModalOpen }) {
                 <div className="row">
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Parent Phone</Label></div>
                     <div className="col-4">
-                        <Input name="emergencyName" type="text" value={form.emergencyName} onChange={handleChange} placeholder="Enter Emergency Name" />
+                        <Input name="emergencyName" type="text" value={form.EmergencyName || ""} onChange={handleChange} placeholder="Enter Emergency Name" />
                     </div>
 
                     <div className="col-2"><Label className="fw-semibold text-secondary mb-0">Parent Email</Label></div>
                     <div className="col-4">
-                        <Input name="emergencyPhone" type="Phone" value={form.emergencyPhone} onChange={handleChange} placeholder="Enter Emergency Phone" />
+                        <Input name="emergencyPhone" type="Phone" value={form.EmergencyPhone || ""} onChange={handleChange} placeholder="Enter Emergency Phone" />
                     </div>
                 </div>
             </FormGroup>

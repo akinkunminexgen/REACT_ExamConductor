@@ -1,14 +1,14 @@
-import Body from "../Components/Panels/Body";
-import StudentForm  from "../Components/Utils/StudentForm";
-import { student, exam } from '../Data';
-import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
+import Body from "../../Components/Panels/Body";
+import StudentForm  from "../../Components/AdminComponent/StudentForm";
+import { student, exam } from '../../Data';
+import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport, FaEye } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { downloadCSV } from "../Helper/CsvHelper";
-import Error from "../Components/Error";
+import { downloadCSV } from "../../Helper/CsvHelper";
+import Error from "../../Components/Error";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -20,13 +20,20 @@ export default function Student() {
     const [rowData, setRowData] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalIsOpenForCreate, setModalIsOpenForCreate] = useState(false);
+    const [modalIsOpenForEdit, setModalIsOpenForEdit] = useState(false);
     const [selectedExams, setSelectedExams] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState([]);
     const [studentName, setStudentName] = useState("");
     const [error, setError] = useState(null);
 
     useEffect(() => {
         setRowData(student);
     }, []);
+
+    const handleAStudent = (student) => {
+        setSelectedStudent({ ...student });
+        setModalIsOpenForEdit(true);
+    };
 
     const handleShowExams = (exams, fullName) => {
         //console.log(exams)
@@ -63,21 +70,35 @@ export default function Student() {
         { field: "IsActive", headerName: "Active", cellRenderer: params => params.value ? "Yes" : "No" },
         { field: "IsEligibleForExam", headerName: "Eligible for Exam", cellRenderer: params => params.value ? "Yes" : "No" },
         { field: "EligibilityReason", headerName: "Eligibility Reason" },
-        { field: "ParentContact", headerName: "Parent Contact" },
+        { field: "ParentPhone", headerName: "Parent Contact" },
         { field: "Notes", headerName: "Notes" },
         { field: "LastModified", headerName: "Last Modified", valueFormatter: params => new Date(params.value).toLocaleString() },
         { field: "CreatedBy", headerName: "Created By" },
         { field: "CreatedAt", headerName: "Created At", valueFormatter: params => new Date(params.value).toLocaleString() },
         {
-            field: "AssignedExams",
+            field: "Exams",
             headerName: "Assigned Exams",
             pinned: "right",
             width: 60,
             cellRenderer: (params) => (
-                <Button color="primary"
-                    size="sm" onClick={() => handleShowExams(params.data.AssignedExams, params.data.FullName)}>
-                    View
-                </Button>
+
+                <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                    <Button
+                        color="primary"
+                        size="sm"
+                        title="Edit Info"
+                        onClick={() => handleAStudent(params.data)}
+                    >
+                        <FaEdit />
+                    </Button>
+
+                    <Button color="info"
+                        title="View details"
+                        size="sm" onClick={() => handleShowExams(params.data.AssignedExams, params.data.FullName)}>
+                        <FaEye />
+                    </Button>
+                </div>
+                
             )
         }
     ]);
@@ -137,6 +158,18 @@ export default function Student() {
                 overlayClassName="my-modal-overlay"
             >
                 <StudentForm setModalOpen={setModalIsOpenForCreate} />
+            </Modal>
+
+            {/* this is the Create question Modal */}
+            <Modal
+                isOpen={modalIsOpenForEdit}
+                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
+                onRequestClose={() => setModalIsOpenForEdit(false)}
+                contentLabel="Create Question"
+                className="my-modal-content"
+                overlayClassName="my-modal-overlay"
+            >
+                <StudentForm setModalOpen={setModalIsOpenForEdit} toEdit={selectedStudent} />
             </Modal>
 
             {/* this is view student info */}

@@ -1,15 +1,15 @@
-import Body from "../Components/Panels/Body";
-import InputText from "../Components/InputText";
-import QuestionForm from "../Components/Utils/QuestionForm";
+import Body from "../../Components/Panels/Body";
+import InputText from "../../Components/InputText";
+import QuestionForm from "../../Components/AdminComponent/QuestionForm";
 import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
-import { adminQuestionLoad, exam } from '../Data';
+import { adminQuestionLoad, exam } from '../../Data';
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
-import Error from "../Components/Error";
+import Error from "../../Components/Error";
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { downloadCSV } from "../Helper/CsvHelper";
+import { downloadCSV } from "../../Helper/CsvHelper";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 

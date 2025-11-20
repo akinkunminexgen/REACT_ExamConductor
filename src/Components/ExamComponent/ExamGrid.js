@@ -44,15 +44,17 @@ export default function Examgrid({ exam, getAnswer, onAnswerChange, submitAnswer
                     onTimeUp={handleTimeUp} />
                 <Row>
                     {currentQuestions.map((question, index) => (
-                        <Col key={question.questionId || index} lg={2} md={4} sm={6} xs={12} className="mb-4">
-                            <Card className="h-100 shadow-sm">
-                                <CardBody>
+                        <Col key={question.questionId || index} xl={2} lg={3} md={4} sm={6} xs={12} className="mb-4">
+                            <Card className="h-100 shadow-sm d-flex flex-column">
+                                <CardBody className="d-flex flex-column">
                                     <CardTitle tag="h6" className="mb-3" style={{ fontSize: "12px" }}>
                                         {(index + (itemsPerPage * (currentPage-1))) + 1}: {question.text.length < 55
                                             ? question.text + '\u00A0'.repeat(55 - question.text.length)
                                             : question.text.slice(0, 55) + ' ...'}
                                     </CardTitle>
-                                    <QuestionPrompt question={question} answerToSubmit={theAnswer} verifyAnswer={getAnswer} />
+                                    <div className="mt-auto">
+                                        <QuestionPrompt question={question} answerToSubmit={theAnswer} verifyAnswer={getAnswer} />
+                                    </div>
                                 </CardBody>
                                 <CardFooter>
                                     <small className="text-muted">Your Answer:{" "}

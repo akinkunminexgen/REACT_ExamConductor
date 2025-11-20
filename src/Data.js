@@ -44,7 +44,7 @@ export const questions = [
     },
     {
         questionId: "Q4",
-        text: "Which library is used for building dynamic single-page applications (SPAs) in JavaScript?",
+        text: "Which library is used for building dynamic single-page applications (SPAs) in JavaScript? This is a common cardThis is a common card layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttons appear aligned.This is a common card layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttons appear aligned.This is a common card layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttons appear aligned.This is a common card layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttons appear aligned.This is a common card layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttons appear aligned. layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttonsThis is a common card layout problem. The solution is to make all cards the same height (or make the button stick to the bottom) so buttons appear aligned. appear aligned.",
         options: [
             { value: "A", label: "Vue.js" },
             { value: "B", label: "Angular" },
@@ -210,7 +210,7 @@ export const student = [
             { "ExamId": 102, "Subject": "English", "Date": "2025-06-12T13:00:00", score: 60 },
             { "ExamId": 104, "Subject": "History", "Date": "2025-06-18T14:00:00", score: null }
         ],
-        "ParentContact": "123-456-7890",
+        "ParentPhone": "123-456-7890",
         "Notes": "Allergic to peanuts.",
         "LastModified": "2025-05-30T15:45:00",
         "CreatedBy": "admin01",
@@ -229,7 +229,7 @@ export const student = [
         "IsEligibleForExam": false,
         "EligibilityReason": "Outstanding tuition fees",
         "AssignedExams": [],
-        "ParentContact": "321-654-0987",
+        "ParentPhone": "321-654-0987",
         "Notes": "Needs extra time for exams.",
         "LastModified": "2025-05-28T10:00:00",
         "CreatedBy": "admin02",
@@ -252,7 +252,7 @@ export const student = [
             { "ExamId": 101, Subject: "Mathematics", Date: "2025-06-15T10:00:00", score: null }
 
         ],
-        "ParentContact": "987-654-3210",
+        "ParentPhone": "987-654-3210",
         "Notes": "",
         "LastModified": "2025-05-27T08:30:00",
         "CreatedBy": "admin01",
@@ -271,7 +271,7 @@ export const student = [
         "IsEligibleForExam": false,
         "EligibilityReason": "Withdrawn from school",
         "AssignedExams": [],
-        "ParentContact": "456-789-1234",
+        "ParentPhone": "456-789-1234",
         "Notes": "Moved to another city.",
         "LastModified": "2025-05-20T14:20:00",
         "CreatedBy": "admin03",
@@ -292,7 +292,7 @@ export const student = [
         "AssignedExams": [
             { "ExamId": 104, "Subject": "History", "Date": "2025-06-18T14:00:00", score: 55 }
         ],
-        "ParentContact": "555-444-3333",
+        "ParentPhone": "555-444-3333",
         "Notes": "Prefect. Shows leadership qualities.",
         "LastModified": "2025-05-25T11:00:00",
         "CreatedBy": "admin02",
@@ -311,7 +311,7 @@ export const student = [
         "IsEligibleForExam": false,
         "EligibilityReason": "Behavioral issues",
         "AssignedExams": [],
-        "ParentContact": "444-888-9999",
+        "ParentPhone": "444-888-9999",
         "Notes": "On disciplinary watchlist.",
         "LastModified": "2025-05-30T16:00:00",
         "CreatedBy": "admin03",
@@ -330,7 +330,7 @@ export const student = [
         "IsEligibleForExam": true,
         "EligibilityReason": "",
         "AssignedExams": [],
-        "ParentContact": "333-222-1111",
+        "ParentPhone": "333-222-1111",
         "Notes": "Recently transferred.",
         "LastModified": "2025-05-29T12:30:00",
         "CreatedBy": "admin04",
@@ -349,7 +349,7 @@ export const student = [
         "IsEligibleForExam": false,
         "EligibilityReason": "Medical leave",
         "AssignedExams": [],
-        "ParentContact": "777-555-0000",
+        "ParentPhone": "777-555-0000",
         "Notes": "Returning next semester.",
         "LastModified": "2025-05-22T09:15:00",
         "CreatedBy": "admin01",
@@ -370,7 +370,7 @@ export const student = [
         "AssignedExams": [
             { "ExamId": 105, "Subject": "Chemistry", "Date": "2025-06-20T09:00:00" }
         ],
-        "ParentContact": "666-777-8888",
+        "ParentPhone": "666-777-8888",
         "Notes": "",
         "LastModified": "2025-05-31T10:45:00",
         "CreatedBy": "admin02",
@@ -391,7 +391,7 @@ export const student = [
         "AssignedExams": [
             { "ExamId": 106, "Subject": "Economics", "Date": "2025-06-25T13:30:00" }
         ],
-        "ParentContact": "888-999-7777",
+        "ParentPhone": "888-999-7777",
         "Notes": "Athlete - national level sprinter.",
         "LastModified": "2025-05-30T14:10:00",
         "CreatedBy": "admin03",
