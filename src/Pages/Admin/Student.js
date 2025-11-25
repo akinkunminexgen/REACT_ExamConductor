@@ -174,11 +174,10 @@ export default function Student() {
 
             {/* this is view student info */}
             <Modal isOpen={modalIsOpen}
-                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                 onRequestClose={() => setModalIsOpen(false)}
-                contentLabel="Assigned Exams Modal"
-                className="my-modal-content"
-                overlayClassName="my-modal-overlay">
+                className="right-modal-content"
+                overlayClassName="right-modal-overlay" 
+                contentLabel="Assigned Exams Modal">
                 <Card>
                     <CardHeader>
                         <CardTitle tag="h5">Assigned Exams for {studentName}</CardTitle>

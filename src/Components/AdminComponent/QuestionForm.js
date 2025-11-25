@@ -85,7 +85,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
             const keys = Object.keys(prev);
             if (keys.length === 0) return prev;
             const lastKey = keys[keys.length - 1];
-            const { [lastKey]: _, ...rest } = prev; // remove last key
+            const { [lastKey]: _, ...rest } = prev; //destruct to remove last key
             return rest;
         });
     }
