@@ -189,7 +189,7 @@ export default function Question() {
 
 
 
-    const maxOptions = Math.max(...adminQuestionLoad.map(q => q.options.length));
+    const maxOptions = Math.max(...adminQuestionLoad.map(q => q?.options?.length ?? 0));
 
     const optionColumns = Array.from({ length: maxOptions }, (_, i) => ({
         headerName: String.fromCharCode(65 + i), // 'A', 'B', 'C', 'D', 'E',

@@ -8,23 +8,24 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
     const [form, setForm] = useState({});
     const [inputTag, setInputTag] = useState(["A"]);
     const [retrieveOptions, setRetrieveOptions] = useState({ A: [] });
+    const [trackProvideAnswer, setTrackProvideAnswer] = useState(true);
     const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
 
 
     //function to know if question is being editted
     const enableEdit = () => {
-        setForm({ ...toEdit })
+;        setForm({ ...toEdit })
 
-        const getOptionTag = toEdit.options.map((opt) => opt.value);
-        const getOptionRetrieval = toEdit.options.reduce((acc, opt) => {
+        const getOptionTag = toEdit.provideAnswer ? [] : toEdit.options.map((opt) => opt.value);
+        const getOptionRetrieval = toEdit.provideAnswer ? [] : toEdit.options.reduce((acc, opt) => {
             acc[opt.value] = [opt.label, opt.isCorrect];
             return acc;
         }, {});
-
+        const getTracking = toEdit.options && toEdit.options.length > 0 ? true : !toEdit.provideAnswer;
+        setTrackProvideAnswer(getTracking);
         setInputTag(getOptionTag);
         setRetrieveOptions(getOptionRetrieval);
-        console.log(getOptionRetrieval);
     }
 
     useEffect(() => {
@@ -48,10 +49,10 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
             newVal = [value, false];
         } else {
             //ensure multiple options can be clicked only if electedQuestion.isCheckBox is true
-            if (!form.isCheckbox && value) {
+            if (!form.isMultipleAnswer && value) {
                 const confirm = Object.entries(retrieveOptions).some(([key, value]) => value[1] === true);
                 if (confirm) {
-                    setError(`You need to ce answer! ${Date.now()}`);
+                    setError(`You need to ce answer! : ${Date.now()}`);
                     return;
                 }
             }
@@ -72,9 +73,31 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
         setRetrieveOptions((prev) => ({ ...prev, [nextChar]: ["", false] }))
     }
 
+    const excludeInputText = () => {
+
+        setInputTag((prev) => {
+            if (prev.length === 0) return prev; 
+            const newInputTag = prev.slice(0, -1); // remove last
+            return newInputTag;
+        });
+
+        setRetrieveOptions((prev) => {
+            const keys = Object.keys(prev);
+            if (keys.length === 0) return prev;
+            const lastKey = keys[keys.length - 1];
+            const { [lastKey]: _, ...rest } = prev; // remove last key
+            return rest;
+        });
+    }
+
 
     const validate = () => {
         let err = {};
+
+        if (!form.text) err.text = "Required";
+        if (!form.marks) err.marks = "Required";
+        if (form.provideAnswer)
+            return err;
 
         inputTag.forEach((key) => {
             const opt = retrieveOptions[key];
@@ -82,18 +105,31 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
                 err[key] = "Required";
             }
         });
-        if (!form.text) err.text = "Required";
-        if (!form.marks) err.marks = "Required";
+        
         if (!retrieveOptions.hasOwnProperty("B") || retrieveOptions.A.length <= 0) {
             
             err.B = "Required";
         }
 
-        const checkAnswer = Object.entries(retrieveOptions).some(([key, value]) => value[1] === true);
-        if (!checkAnswer) {
-            err.Answer = "Required";
-            setError(`You need to check atleast one answer! : ${Date.now()}`);
+        const trueCount = Object.values(retrieveOptions)
+            .filter(v => v[1] === true)
+            .length;
+
+        const hasOne = trueCount === 1;
+        const hasMoreThanOne = trueCount > 1;  
+            
+        if (form.isMultipleAnswer) {
+            if (!hasMoreThanOne) {
+                err.Answer = "Required";
+                setError(`You need to check atleast one answer! : ${Date.now()}`);
+            }
+        }else{
+            if (!hasOne) {
+                err.Answer = "Required";
+                setError(`You need to check atleast one answer! : ${Date.now()}`);
+            }
         }
+       
 
         return err;
     };
@@ -105,11 +141,13 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
         
         let err = validate();
         setErrors(err);
-        console.log("SUBMITTED DATA:", err);
+        console.log("SUBMITTED err:", err);       
+        
 
         if (Object.keys(err).length === 0) {
 
             console.log("SUBMITTED DATA:", form);
+            console.log("SUBMITTED retrieveOption:", retrieveOptions);
             const optionArray = Object.entries(retrieveOptions).map((val, i) => ({
                 value: val[0],
                 label: val[1][0],
@@ -118,9 +156,10 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
             const latestQuestion = {
                 ...form,
                 questionId: form.questionId ?? rowDataLength,
-                options: optionArray || []
+                options: form.provideAnswer ? [] : optionArray || []
             }
             setForm(latestQuestion);
+            console.log("SUBMITTED form:", latestQuestion);
 
             handleSave(latestQuestion);
             setModalOpen(false);
@@ -175,24 +214,52 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
                             />
                             {errors.marks && <small className="text-danger">{errors.marks}</small>}
                         </div>
-                        <div className="col-auto">
-                            <Label className="fw-semibold text-secondary mb-0"><i className="bi bi-123 text-primary"> Is it Multiple Answer?</i></Label>
-                        </div>
-                        <div className="col-auto">
-                            <Input
-                                type="checkbox"
-                                name="isCheckbox"
-                                checked={form.isCheckbox || false}
-                                onChange={(e) =>
-                                    setForm((prev) => ({ ...prev, isCheckbox: e.target.checked }))
-                                }
-                            />
-                        </div>
+                        {(!trackProvideAnswer || !toEdit.options) &&
+                            <>
+                                <div className="col-auto">
+                                    <Label className="fw-semibold text-secondary mb-0"><i className="bi bi-123 text-primary"> Student Should Provide answer?</i></Label>
+                                </div>
+                                <div className="col-auto">
+                                    <Input
+                                        type="checkbox"
+                                        name="isMultipleAnswer"
+                                        checked={form.provideAnswer || false}
+                                        onChange={(e) => {
+                                            const checked = e.target.checked;
+                                            setForm((prev) => ({ ...prev, provideAnswer: checked }));
+                                            setTrackProvideAnswer(!checked);
+                                        }}
+                                    />
+                                </div>
+                            </>
+                        }
+                        
+                        {trackProvideAnswer &&
+                            <>
+                                <div className="col-auto">
+                                    <Label className="fw-semibold text-secondary mb-0">
+                                        <i className="bi bi-123 text-primary"> Is it Multiple Answer?</i>
+                                    </Label>
+                                </div>
+                                <div className="col-auto">
+                                    <Input
+                                        type="checkbox"
+                                        name="isMultipleAnswer"
+                                        checked={form.isMultipleAnswer || false}
+                                        onChange={(e) =>
+                                            setForm((prev) => ({ ...prev, isMultipleAnswer: e.target.checked }))
+                                        }
+                                    />
+                                </div>
+                            </>
+                        }
+
+                        
 
                     </Row>
                 </FormGroup>
 
-                <FormGroup >
+                {trackProvideAnswer && <FormGroup >
                     {inputTag.map((opt, i) => (
 
 
@@ -214,13 +281,22 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
                                         size="sm"
                                         color="primary"
                                         title="Add Student"
-                                        style={{ backgroundColor: "#3d5987", borderColor: "#4f46e5" }}
-                                        onClick={includeInputText}><FaPlus /></Button>
-                                </Col>
+                                        style={{ backgroundColor: "#3d5987", borderColor: "#4f46e5", marginRight: "2px" }}
+                                    onClick={includeInputText}><FaPlus /></Button>
+
+                                    {inputTag.length - 1 > 0 && <Button
+                                        size="sm"
+                                        color="danger"
+                                        title="Add Student"
+                                        style={{ borderColor: "#4f46e5" }}
+                                        onClick={excludeInputText}><FaTimes /></Button>}
+                                </Col>                           
+                                
                             }
                         </Row>
                     ))}
                 </FormGroup >
+                }
 
                 {/* Button Row */}
                 <FormGroup>

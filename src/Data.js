@@ -405,7 +405,8 @@ export const adminQuestionLoad = [
         "questionId": 1,
         "text": "Which framework is based on PHP?",
         "marks": 5,
-        "isCheckbox": false,
+        "isMultipleAnswer": false,
+        "provideAnswer": false,
         "options": [
             { "value": "A", "label": "Laravel", "isCorrect": true },
             { "value": "B", "label": "Symfony", "isCorrect": false },
@@ -419,7 +420,8 @@ export const adminQuestionLoad = [
         "questionId": 2,
         "text": "Which JavaScript libraries use a virtual DOM? (Select all that apply)",
         "marks": 10,
-        "isCheckbox": true,
+        "isMultipleAnswer": true,
+        "provideAnswer": false,
         "options": [
             { "value": "A", "label": "React", "isCorrect": true },
             { "value": "B", "label": "Vue.js", "isCorrect": true },
@@ -433,7 +435,8 @@ export const adminQuestionLoad = [
         "questionId": 3,
         text: "In the context of modern web development, which of the following frameworks or technologies would you choose for building a highly scalable, maintainable, and performant web application? Consider backend, frontend, and full-stack solutions.",
         marks: 5,
-        isCheckbox: true,
+        isMultipleAnswer: true,
+        "provideAnswer": false,
         options: [
             {
                 "value": "A",
@@ -461,6 +464,15 @@ export const adminQuestionLoad = [
                 isCorrect: false
             }
         ],
+        "createdAt": "2025-10-06T12:05:00Z",
+        "updatedAt": "2025-10-06T12:35:00Z"
+    },
+    {
+        "questionId": 4,
+        "text": "Which PHP framework do we use most?",
+        "marks": 10,
+        "isMultipleAnswer": false,
+        "provideAnswer": true,
         "createdAt": "2025-10-06T12:05:00Z",
         "updatedAt": "2025-10-06T12:35:00Z"
     }
