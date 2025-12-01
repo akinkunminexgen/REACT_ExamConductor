@@ -26,12 +26,14 @@ export default function App() {
                             <Route index element={<Login />} />
                             <Route path="/unauthorized" element={<Unauthorized />} />
 
-
-                            <Route element={<PrivateRoute allowedRoles={["Admin", "Student"]} />}>
+                            <Route element={<PrivateRoute allowedRoles={["Student"]} />}>
                                 <Route path="/Dashboard" element={<Dashboard />} />
+                                <Route path="/Conductor/:examId" element={<Conductor />} />
+                            </Route>
+
+                            <Route element={<PrivateRoute allowedRoles={["Admin", "Lecturer"]} />}>
                                 <Route path="/Students" element={<Student />} />
                                 <Route path="/Questions" element={<Question />} />
-                                <Route path="/Conductor/:examId" element={<Conductor />} />
                             </Route>
 
 

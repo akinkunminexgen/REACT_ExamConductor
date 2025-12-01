@@ -4,7 +4,7 @@ import { useSidebar } from "./SideBarContext";
 import { FaTachometerAlt, FaChartArea, FaClipboardList, FaSignInAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 export default function SideBar() {
-    const { openMenu, toggleMenu } = useSidebar();
+    const { openMenu, toggleMenu, displayMenuAuth } = useSidebar();
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
@@ -22,6 +22,15 @@ export default function SideBar() {
         >
             <div className="flex-grow-1 overflow-auto">
                 <div className="list-group list-group-flush mx-2 mt-4">
+
+                    {displayMenuAuth && (
+                        <ul className={`list-group list-group-flush ${isCollapsed ? "flyout-menu" : "ms-4"}`}>
+                            <li className="list-group-item py-1 border-0 d-flex align-items-center">
+                                <FaClipboardList className="me-3 fs-5" />
+                                <Link to="/" className="text-reset text-decoration-none">Login</Link>
+                            </li>
+                        </ul>
+                    )}
 
                     {/* Examination Menu */}
                     <div className="position-relative">
@@ -41,10 +50,6 @@ export default function SideBar() {
                         {/* Submenu */}
                         {openMenu === "menu1" && (
                             <ul className={`list-group list-group-flush ${isCollapsed ? "flyout-menu" : "ms-4"}`}>
-                                <li className="list-group-item py-1 border-0 d-flex align-items-center">
-                                    <FaSignInAlt className="me-3 fs-5" />
-                                    <Link to="/" className="text-reset text-decoration-none">Login</Link>
-                                </li>
                                 <li className="list-group-item py-1 border-0 d-flex align-items-center">
                                     <FaClipboardList className="me-3 fs-5" />
                                     <Link to="/Dashboard" className="text-reset text-decoration-none">Dashboard</Link>
@@ -70,10 +75,6 @@ export default function SideBar() {
 
                         {openMenu === "menu2" && (
                             <ul className={`list-group list-group-flush ${isCollapsed ? "flyout-menu" : "ms-4"}`}>
-                                <li className="list-group-item py-1 border-0">
-                                    <FaSignInAlt className="me-3 fs-5" />
-                                    <Link to="/" className="text-reset text-decoration-none">Login</Link>
-                                </li>
                                 <li className="list-group-item py-1 border-0">
                                     <Link to="/students" className="text-reset text-decoration-none">Students</Link>
                                 </li>

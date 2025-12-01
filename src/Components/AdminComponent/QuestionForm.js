@@ -109,6 +109,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
         if (!retrieveOptions.hasOwnProperty("B") || retrieveOptions.A.length <= 0) {
             
             err.B = "Required";
+            setError(`You need more than one option! : ${Date.now()}`);
         }
 
         const trueCount = Object.values(retrieveOptions)
