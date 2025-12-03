@@ -4,6 +4,8 @@ import Home from './Pages/Home';
 import Dashboard from './Pages/Dashboard';
 import Student from './Pages/Admin/Student';
 import Question from './Pages/Admin/Question';
+import Settings from './Pages/Admin/Settings';
+import ExamSchedule from './Pages/Admin/ExamSchedule';
 import Header from "./Components/Panels/Header";
 import PrivateRoute from "./Helper/PrivateRoute";
 import Login from "./Sections/Login";
@@ -31,9 +33,11 @@ export default function App() {
                                 <Route path="/Conductor/:examId" element={<Conductor />} />
                             </Route>
 
-                            <Route element={<PrivateRoute allowedRoles={["Admin", "Lecturer"]} />}>
+                            <Route element={<PrivateRoute allowedRoles={["Admin", "Lecturer", "Student"]} />}>
                                 <Route path="/Students" element={<Student />} />
                                 <Route path="/Questions" element={<Question />} />
+                                <Route path="/Settings" element={<Settings />} />
+                                <Route path="/Scheduling" element={<ExamSchedule />} />
                             </Route>
 
 

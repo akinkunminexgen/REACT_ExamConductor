@@ -245,3 +245,9 @@ body {
 .ml-minus-1 {
     margin-left: -0.90rem;
 }
+.surrondBorder {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0px 15px 0px 15px;
+    margin-top: 5px;
+}

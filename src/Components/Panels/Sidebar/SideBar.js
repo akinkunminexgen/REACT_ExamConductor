@@ -81,6 +81,13 @@ export default function SideBar() {
                                 <li className="list-group-item py-1 border-0">
                                     <Link to="/questions" className="text-reset text-decoration-none">Questions</Link>
                                 </li>
+                                <li className="list-group-item py-1 border-0">
+                                    <Link to="/scheduling" className="text-reset text-decoration-none">Exam Schedule</Link>
+                                </li>
+                                <li className="list-group-item py-1 border-0">
+                                    <Link to="/settings" className="text-reset text-decoration-none">Settings</Link>
+                                </li>
+                                
                             </ul>
                         )}
                     </div>

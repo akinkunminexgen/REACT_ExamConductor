@@ -47,23 +47,31 @@ export default function Question() {
         setModalIsOpenForEdit(true);
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setSelectedQuestion((prev) => ({ ...prev, [name]: value }));
-    };
 
-    const handleOptionChange = (index, value) => {
-        setSelectedQuestion((prev) => {
-            const updatedOptions = [...prev.options];
-            updatedOptions[index].label = value;
-            return { ...prev, options: updatedOptions };
-        });
-    };
 
     const TemplateDownloader = () => {
         const getOneRowData = rowData; //to always get template;
         downloadCSV(getOneRowData, "Question_Template");
     };
+
+    const dataSource = {
+        getRows: async (params) => {
+            const { request } = params;
+
+            const res = await fetch('/api/questions/search', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(request)   // include filters, sorting, pagination!
+            });
+
+            const data = await res.json();
+
+            params.success({
+                rowData: data.rows,        // actual records
+                rowCount: data.totalCount  // total count in database
+            });
+        }
+    }; //this is for server rendering which is an enterprise version
 
     const handleCsvSave = async () => {
         const file = csvFile;
@@ -204,6 +212,13 @@ export default function Question() {
     const [columnDefs, setColumnDefs] = useState([
         { field: "questionId", headerName: "Quest Id.", width: 30, pinned: "left", lockPinned: true, cellClass: "lock-pinned", },
         { field: "text", headerName: "Question", minWidth: 600, maxWidth: 900, pinned: "left" },
+        {
+            field: "tag",
+            headerName: "Tag",
+            filter: "agTextColumnFilter",
+            floatingFilter: true,  // inline filter UI
+            width: 140
+        },
         ...optionColumns,
         {
             field: "AssignedExams",
@@ -279,6 +294,8 @@ export default function Question() {
                             pagination={true}
                             paginationPageSize={15}
                             paginationPageSizeSelector={[10, 15, 20]}
+                            //rowModelType="serverSide"
+                            //serverSideDatasource={dataSource}
                         />
                     </div>
                 </div>

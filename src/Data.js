@@ -405,6 +405,7 @@ export const adminQuestionLoad = [
         "questionId": 1,
         "text": "Which framework is based on PHP?",
         "marks": 5,
+        "tag": "Math",
         "isMultipleAnswer": false,
         "provideAnswer": false,
         "options": [
@@ -420,6 +421,7 @@ export const adminQuestionLoad = [
         "questionId": 2,
         "text": "Which JavaScript libraries use a virtual DOM? (Select all that apply)",
         "marks": 10,
+        "tag": "CSC",
         "isMultipleAnswer": true,
         "provideAnswer": false,
         "options": [
@@ -435,6 +437,7 @@ export const adminQuestionLoad = [
         "questionId": 3,
         text: "In the context of modern web development, which of the following frameworks or technologies would you choose for building a highly scalable, maintainable, and performant web application? Consider backend, frontend, and full-stack solutions.",
         marks: 5,
+        "tag": "Math",
         isMultipleAnswer: true,
         "provideAnswer": false,
         options: [
@@ -471,6 +474,7 @@ export const adminQuestionLoad = [
         "questionId": 4,
         "text": "Which PHP framework do we use most?",
         "marks": 10,
+        "tag": "CSC",
         "isMultipleAnswer": false,
         "provideAnswer": true,
         "createdAt": "2025-10-06T12:05:00Z",
