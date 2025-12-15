@@ -13,7 +13,7 @@ export default function Conductor() {
     const COOKIE_NAME = `answers_exam_${exam.examId}_user_${exam.student.studentId}`;
 
     const submitAnswers = async () => {
-        ;
+        
         const payload = {
             studentId: exam.student.studentId,  
             examId: exam.examId,           

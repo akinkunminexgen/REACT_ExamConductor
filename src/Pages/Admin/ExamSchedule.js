@@ -1,11 +1,12 @@
 import Body from "../../Components/Panels/Body";
 import Modal from "react-modal";
-import { FaPlus, FaEdit, FaEye } from "react-icons/fa";
+import { FaPlus, FaEdit, FaEye, FaPen } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle } from "reactstrap";
 import ScheduleForm from "../../Components/AdminComponent/ScheduleForm";
+import GroupAssignment from "../../Components/AdminComponent/GroupAssignment";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -13,6 +14,7 @@ export default function ExamSchedule() {
     const [rowData, setRowData] = useState([]);
     const [modalCreate, setModalCreate] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
+    const [modalEditAccess, setModalEditAccess] = useState(false);
     const [selectedSchedule, setSelectedSchedule] = useState(null);
 
     useEffect(() => {
@@ -76,6 +78,10 @@ export default function ExamSchedule() {
             accessType: accessType
         });
         setModalEdit(true);
+    }
+
+    const handleAccess = (data) => {
+        setModalEditAccess(true);
     }
 
     const handleSave = async (theQuestion) => {
@@ -153,12 +159,19 @@ export default function ExamSchedule() {
                 <div className="d-flex gap-2">
                     <Button
                         size="sm"
+                        title="Edit Exam Schdulw"
                         color="primary"
                         onClick={() => {
                             handleParameters(params.data)
                         }}
                     >
                         <FaEdit />
+                    </Button>
+
+                    <Button color="info"
+                        title="Assign Exam to Student/Classes/Groups"
+                        size="sm" onClick={() => handleAccess(params.data)}>
+                        <FaPen />
                     </Button>
                 </div>
             )
@@ -221,6 +234,18 @@ export default function ExamSchedule() {
                 <ScheduleForm setModalOpen={setModalEdit}
                     handleSave={handleSave}
                     toEdit={selectedSchedule} />
+            </Modal>
+
+
+            {/* Assign Access to Exam */}
+            <Modal
+                isOpen={modalEditAccess}
+                onRequestClose={() => setModalEditAccess(false)}
+                className="my-modal-content"
+                overlayClassName="my-modal-overlay"
+                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
+            >
+                <GroupAssignment setModalOpen={setModalEditAccess} />
             </Modal>
         </Body>
     );

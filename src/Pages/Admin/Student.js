@@ -1,7 +1,8 @@
 import Body from "../../Components/Panels/Body";
-import StudentForm  from "../../Components/AdminComponent/StudentForm";
+import StudentForm from "../../Components/AdminComponent/StudentForm";
+import StudentEnrollment from "../../Components/AdminComponent/StudentEnrollment";
 import { student, exam } from '../../Data';
-import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport, FaEye } from "react-icons/fa";
+import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport, FaEye, FaInfoCircle, FaUserCog } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
@@ -21,6 +22,7 @@ export default function Student() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalIsOpenForCreate, setModalIsOpenForCreate] = useState(false);
     const [modalIsOpenForEdit, setModalIsOpenForEdit] = useState(false);
+    const [modalIsOpenForEnrollment, setModalIsOpenForEnrollment] = useState(false);
     const [selectedExams, setSelectedExams] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState([]);
     const [studentName, setStudentName] = useState("");
@@ -46,6 +48,11 @@ export default function Student() {
         setModalIsOpenForCreate(true);
         setError(null);
         return;
+    }
+
+    const handleEnrollment = (student) => {
+        setSelectedStudent({ ...student });
+        setModalIsOpenForEnrollment(true);
     }
 
     const TemplateDownloader = () => {
@@ -96,6 +103,12 @@ export default function Student() {
                         title="View details"
                         size="sm" onClick={() => handleShowExams(params.data.AssignedExams, params.data.FullName)}>
                         <FaEye />
+                    </Button>
+
+                    <Button color="info"
+                        title="Manage Enrollment"
+                        size="sm" onClick={() => handleEnrollment(params.data)}>
+                        <FaUserCog />
                     </Button>
                 </div>
                 
@@ -148,28 +161,39 @@ export default function Student() {
                 </div>
             </div>
 
-            {/* this is the Create question Modal */}
+            {/* this is to Create student Modal */}
             <Modal
                 isOpen={modalIsOpenForCreate}
                 style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                 onRequestClose={() => setModalIsOpenForCreate(false)}
-                contentLabel="Create Question"
+                contentLabel="Create Student"
                 className="my-modal-content"
                 overlayClassName="my-modal-overlay"
             >
                 <StudentForm setModalOpen={setModalIsOpenForCreate} />
             </Modal>
 
-            {/* this is the Create question Modal */}
+            {/* this is to Update student Modal */}
             <Modal
                 isOpen={modalIsOpenForEdit}
                 style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
                 onRequestClose={() => setModalIsOpenForEdit(false)}
-                contentLabel="Create Question"
+                contentLabel="Edit Student"
                 className="my-modal-content"
                 overlayClassName="my-modal-overlay"
             >
                 <StudentForm setModalOpen={setModalIsOpenForEdit} toEdit={selectedStudent} />
+            </Modal>
+
+            {/* this is the student Enrollment Modal */}
+            <Modal
+                isOpen={modalIsOpenForEnrollment}
+                onRequestClose={() => setModalIsOpenForCreate(false)}
+                contentLabel="Student Enrollment"
+                className="right-modal-content"
+                overlayClassName="right-modal-overlay" 
+            >
+                <StudentEnrollment setModalOpen={setModalIsOpenForEnrollment} student={selectedStudent} />
             </Modal>
 
             {/* this is view student info */}
