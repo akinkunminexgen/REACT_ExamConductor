@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import Auth from "../Services/Auth";
-import Body from "../Components/Panels/Body";
+import Auth from "../services/Auth";
+import Body from "../components/Panels/Body";
 import { Navigate } from "react-router-dom";
 import { Container, Row, Col, Button } from "reactstrap";
 export default function Login() {

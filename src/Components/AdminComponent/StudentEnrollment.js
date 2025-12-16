@@ -71,7 +71,6 @@ export default function StudentEnrollment({ setModalOpen, student }) {
     }
 
     const enrollStudent = async () => {
-
         if (selectedCourses.length === 0) {
             return setMessage({ type: "error", text: "Select at least one course!" });
         }
@@ -116,6 +115,7 @@ export default function StudentEnrollment({ setModalOpen, student }) {
                     ]
                 };
             });
+            setSelectedCourses([]);
 
             setMessage({ type: "error", text: "Enrollment failed!" });
         } finally {
@@ -150,7 +150,7 @@ export default function StudentEnrollment({ setModalOpen, student }) {
 
                         {/* Checkbox list */}
                         <Card className="shadow-sm">
-                            <CardBody style={{ maxHeight: "240px", overflowY: "auto" }}>
+                            <CardBody style={{ maxHeight: "200px", overflowY: "auto" }}>
                                 {filteredCourses.length === 0 && (
                                     <div className="text-muted text-center py-3">
                                         No courses found
@@ -186,11 +186,12 @@ export default function StudentEnrollment({ setModalOpen, student }) {
                         <Button color="primary" onClick={enrollStudent}
                             disabled={loading || selectedCourses.length === 0} >
                             {loading ?
-                                (<> <Spinner size="sm" className="me-2" /> Enrolling… </>)
+                                (<> <Spinner size="sm" className="me-2" /> Enrolling </>)
                                 :
                                 (<> <FaSave className="me-2" /> Enroll Student </>)}
                         </Button>
                     </div>
+
                 </CardBody>
                 
 

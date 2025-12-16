@@ -1,16 +1,20 @@
-import Body from "../../Components/Panels/Body";
+import Body from "../../components/Panels/Body";
 import Modal from "react-modal";
 import { FaPlus, FaEdit, FaEye, FaPen } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle } from "reactstrap";
-import ScheduleForm from "../../Components/AdminComponent/ScheduleForm";
-import GroupAssignment from "../../Components/AdminComponent/GroupAssignment";
+import ScheduleForm from "../../components/AdminComponent/ScheduleForm";
+import GroupAssignment from "../../components/AdminComponent/GroupAssignment";
+import GlobalLoader from "../../components/Common/GlobalLoader";
+import { useLoading } from "../../context/LoadingContext";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export default function ExamSchedule() {
+
+    const { loading, setLoading } = useLoading();
     const [rowData, setRowData] = useState([]);
     const [modalCreate, setModalCreate] = useState(false);
     const [modalEdit, setModalEdit] = useState(false);
@@ -179,74 +183,78 @@ export default function ExamSchedule() {
     ];
 
     return (
-        <Body>
-            <div className="ag-theme-alpine row">
+         <>
+            {loading && <GlobalLoader />}
+            <Body>
+                <div className="ag-theme-alpine row">
 
-                {/* Top actions */}
-                <div className="col-12 py-2 text-left">
-                    <Button
-                        size="sm"
-                        color="primary"
-                        style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }}
-                        onClick={() => setModalCreate(true)}
-                    >
-                        <FaPlus className="me-1" /> Create Schedule
-                    </Button>
+                    {/* Top actions */}
+                    <div className="col-12 py-2 text-left">
+                        <Button
+                            size="sm"
+                            color="primary"
+                            style={{ backgroundColor: "#4f46e5", borderColor: "#4f46e5" }}
+                            onClick={() => setModalCreate(true)}
+                        >
+                            <FaPlus className="me-1" /> Create Schedule
+                        </Button>
+                    </div>
+
+                    {/* Grid */}
+                    <div className="col-12" style={gridStyle}>
+                        <AgGridReact
+                            rowData={rowData}
+                            columnDefs={columnDefs}
+                            defaultColDef={{
+                                resizable: true,
+                                filter: true,
+                                sortable: true,
+                                floatingFilter: true
+                            }}
+                            pagination={true}
+                            paginationPageSize={15}
+                        />
+                    </div>
                 </div>
 
-                {/* Grid */}
-                <div className="col-12" style={gridStyle}>
-                    <AgGridReact
-                        rowData={rowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={{
-                            resizable: true,
-                            filter: true,
-                            sortable: true,
-                            floatingFilter: true
-                        }}
-                        pagination={true}
-                        paginationPageSize={15}
-                    />
-                </div>
-            </div>
+                {/* Create Schedule Modal */}
+                <Modal
+                    isOpen={modalCreate}
+                    onRequestClose={() => setModalCreate(false)}
+                    className="my-modal-content"
+                    overlayClassName="my-modal-overlay"
+                    style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
+                >
+                    <ScheduleForm setModalOpen={setModalCreate}
+                        handleSave={handleSave}/>
+                </Modal>
 
-            {/* Create Schedule Modal */}
-            <Modal
-                isOpen={modalCreate}
-                onRequestClose={() => setModalCreate(false)}
-                className="my-modal-content"
-                overlayClassName="my-modal-overlay"
-                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
-            >
-                <ScheduleForm setModalOpen={setModalCreate}
-                   handleSave={handleSave}/>
-            </Modal>
-
-            {/* Edit Schedule Modal */}
-            <Modal
-                isOpen={modalEdit}
-                onRequestClose={() => setModalEdit(false)}
-                className="my-modal-content"
-                overlayClassName="my-modal-overlay"
-                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
-            >
-                <ScheduleForm setModalOpen={setModalEdit}
-                    handleSave={handleSave}
-                    toEdit={selectedSchedule} />
-            </Modal>
+                {/* Edit Schedule Modal */}
+                <Modal
+                    isOpen={modalEdit}
+                    onRequestClose={() => setModalEdit(false)}
+                    className="my-modal-content"
+                    overlayClassName="my-modal-overlay"
+                    style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
+                >
+                    <ScheduleForm setModalOpen={setModalEdit}
+                        handleSave={handleSave}
+                        toEdit={selectedSchedule} />
+                </Modal>
 
 
-            {/* Assign Access to Exam */}
-            <Modal
-                isOpen={modalEditAccess}
-                onRequestClose={() => setModalEditAccess(false)}
-                className="my-modal-content"
-                overlayClassName="my-modal-overlay"
-                style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
-            >
-                <GroupAssignment setModalOpen={setModalEditAccess} />
-            </Modal>
-        </Body>
+                {/* Assign Access to Exam */}
+                <Modal
+                    isOpen={modalEditAccess}
+                    onRequestClose={() => setModalEditAccess(false)}
+                    className="my-modal-content"
+                    overlayClassName="my-modal-overlay"
+                    style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
+                >
+                    <GroupAssignment setModalOpen={setModalEditAccess} />
+                </Modal>
+            </Body>
+        </>
+        
     );
 }

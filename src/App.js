@@ -1,19 +1,19 @@
-import ExamGrid from "./Components/ExamComponent/ExamGrid";
-import Conductor from './Pages/Conductor';
-import Home from './Pages/Home';
-import Dashboard from './Pages/Dashboard';
-import Student from './Pages/Admin/Student';
-import Question from './Pages/Admin/Question';
-import Settings from './Pages/Admin/Settings';
-import ExamSchedule from './Pages/Admin/ExamSchedule';
-import Header from "./Components/Panels/Header";
-import PrivateRoute from "./Helper/PrivateRoute";
-import Login from "./Sections/Login";
-import Unauthorized from "./Sections/Unauthorized";
-import FooterMain from "./Components/Panels/Footer";
+import ExamGrid from "./components/ExamComponent/ExamGrid";
+import Conductor from './pages/Conductor';
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import Student from './pages/Admin/Student';
+import Question from './pages/Admin/Question';
+import Settings from './pages/Admin/Settings';
+import ExamSchedule from './pages/Admin/ExamSchedule';
+import Header from "./components/Panels/Header";
+import PrivateRoute from "./helper/PrivateRoute";
+import Login from "./sections/Login";
+import Unauthorized from "./sections/Unauthorized";
+import FooterMain from "./components/Panels/Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Modal from "react-modal";
-import { SidebarProvider } from "./Components/Panels/Sidebar/SideBarContext";
+import { SidebarProvider } from "./components/Panels/Sidebar/SideBarContext";
 export default function App() {
     Modal.setAppElement('#root');
     

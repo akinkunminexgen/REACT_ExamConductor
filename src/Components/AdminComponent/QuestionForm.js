@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, FormGroup, Row, Col, Label, Input, Button } from "reactstrap";
-import Error from "../../Components/Error";
-import InputText from "../../Components/InputText";
+import Error from "../../components/Error";
+import InputText from "../../components/InputText";
 import { FaTimes, FaEdit, FaPlus } from "react-icons/fa";
 
 export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, toEdit = {} }) {

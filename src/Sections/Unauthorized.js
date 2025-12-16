@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from "reactstrap";
-import Body from "../Components/Panels/Body";
+import Body from "../components/Panels/Body";
 
 const Unauthorized = () => {
     return (

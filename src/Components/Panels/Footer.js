@@ -3,7 +3,7 @@ import React from "react";
 // reactstrap compnents
 import { Button, Container, Row, Col } from "reactstrap";
 
-// Core Components
+// Core components
 
 export default function FooterMain() {
     return (

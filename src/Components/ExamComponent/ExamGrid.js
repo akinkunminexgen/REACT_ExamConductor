@@ -1,5 +1,5 @@
 import QuestionPrompt from "./QuestionPrompt";
-import CountdownTimer from "../../Helper/CountdownTimer";
+import CountdownTimer from "../../helper/CountdownTimer";
 import Paginate from "../Panels/Pagination";
 
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from "reactstrap";

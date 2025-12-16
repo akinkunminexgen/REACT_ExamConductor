@@ -1,4 +1,4 @@
-import Body from "../Components/Panels/Body";
+import Body from "../components/Panels/Body";
 import { exams } from '../Data';
 import { useRef, useEffect, useState } from 'react';
 import { Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button } from 'reactstrap';

@@ -1,5 +1,5 @@
-import ExamGrid from "../Components/ExamComponent/ExamGrid";
-import Body from "../Components/Panels/Body";
+import ExamGrid from "../components/ExamComponent/ExamGrid";
+import Body from "../components/Panels/Body";
 import { exams } from '../Data';
 import { useRef, useEffect, useState } from 'react';
 import { Button } from 'reactstrap';

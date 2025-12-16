@@ -1,4 +1,4 @@
-import Body from "../Components/Panels/Body";
+import Body from "../components/Panels/Body";
 import { exam } from '../Data';
 import { useRef, useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
