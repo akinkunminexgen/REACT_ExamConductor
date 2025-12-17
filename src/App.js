@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Student from './pages/Admin/Student';
 import Question from './pages/Admin/Question';
 import Settings from './pages/Admin/Settings';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 import ExamSchedule from './pages/Admin/ExamSchedule';
 import Header from "./components/Panels/Header";
 import PrivateRoute from "./helper/PrivateRoute";
@@ -13,7 +14,7 @@ import Unauthorized from "./sections/Unauthorized";
 import FooterMain from "./components/Panels/Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Modal from "react-modal";
-import { SidebarProvider } from "./components/Panels/Sidebar/SideBarContext";
+import { SidebarProvider } from "./context/SideBarContext";
 export default function App() {
     Modal.setAppElement('#root');
     
@@ -38,6 +39,7 @@ export default function App() {
                                 <Route path="/Questions" element={<Question />} />
                                 <Route path="/Settings" element={<Settings />} />
                                 <Route path="/Scheduling" element={<ExamSchedule />} />
+                                <Route path="/AdminDashboard" element={<AdminDashboard />} />
                             </Route>
 
 
