@@ -10,6 +10,9 @@ import {
 import { Card, CardBody, CardHeader } from "reactstrap";
 
 export default function MyLineChart({ title, dataKey, enrollmentData }) {
+
+    const { xKey, yKey } = dataKey;
+
     return (
         <Card className="shadow-sm">
             <CardHeader className="bg-light fw-semibold">
@@ -20,12 +23,12 @@ export default function MyLineChart({ title, dataKey, enrollmentData }) {
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={enrollmentData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey={dataKey[0]} />
+                        <XAxis dataKey={xKey} />
                         <YAxis />
                         <Tooltip />
                         <Line
                             type="monotone"
-                            dataKey={dataKey[1]}
+                            dataKey={yKey}
                             stroke="#0d6efd"
                             strokeWidth={3}
                         />

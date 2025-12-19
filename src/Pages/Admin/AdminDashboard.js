@@ -20,6 +20,7 @@ import MyLineChart from "../../components/Chart/MyLineChart";
 import MyBarChart from "../../components/Chart/MyBarChart";
 import GlobalLoader from "../../components/Common/GlobalLoader";
 import { useLoading } from "../../context/LoadingContext";
+import { getKeysForChart } from "../../helper/XYkeys";
 
 export default function AdminDashboard() {
     const { loading, setLoading } = useLoading();
@@ -85,12 +86,6 @@ export default function AdminDashboard() {
         if (diff < 60) return `${diff} min ago`;
         if (diff < 1440) return `${Math.floor(diff / 60)} hrs ago`;
         return new Date(date).toLocaleDateString();
-    };
-
-    const getKeysForChart = (data) => {
-        if (!Array.isArray(data) || data.length === 0) return null;
- 
-        return Object.keys(data[0]);
     };
 
 

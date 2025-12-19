@@ -28,26 +28,33 @@ export const downloadCSV = (data, filename = "template.csv") => {
             }
         });
 
-        return maxIndex;
+        return { maxIndex, maxLength };
     };
-
+    
     const toAllowTemplate = typeof data === 'object' && !Array.isArray(data) ? true : false;
+    const { maxIndex, maxLength } = getHighestOptionLength(data);
     let getPosition = 0;
     if (toAllowTemplate) {
         data = [data]; //to ensure it is in list format for template.csv
-    } else {
-        const getOptionLength = getHighestOptionLength(data);
-        getPosition = getOptionLength === -1 ? 0 : getOptionLength;
+    } else {        
+        getPosition = maxIndex === -1 ? 0 : maxIndex;
     }
         
 
     
+    let provideAnswerPosition = 0;
 
     if (typeof data[getPosition] === "object" && data[getPosition] !== null) {
 
-        Object.entries(data[getPosition]).forEach((val) => {
-            if (!Array.isArray(val[1]))
+        Object.entries(data[getPosition]).forEach((val, k) => {
+            if (!Array.isArray(val[1])) {
                 getHeader.push(escapeCSV(val[0]))
+
+                if (val[0] === "provideAnswer")
+                    provideAnswerPosition = k+1;
+            }
+                
+
                 
             if (Array.isArray(val[1]) && typeof val[1][0] == 'object') {
                 const theOptionHeader = val[1].map((v, k) => {
@@ -68,16 +75,29 @@ export const downloadCSV = (data, filename = "template.csv") => {
     const toAllowSpace = data[getPosition].options && Array.isArray(data[getPosition].options) ?  data[getPosition].options.length : 0;
     
     if (data.length > 0 && !toAllowTemplate) {
-        data.forEach((body) => {
+        data.forEach((body, keyOfVal) => {
             getBody = [];
             const getTheBody = Object.values(body);
+            
             getTheBody.forEach((val, key) => {
                 let getTheAnswers = "";
                 if (!Array.isArray(val)) {
+
+                    //to put space for question component without options
+                    if (key === provideAnswerPosition && maxLength > 0) {
+                        console.log("kk", key, provideAnswerPosition, maxLength)
+                        for (let i = 0; i < maxLength; i++) {
+                            getBody.push("");
+                        }
+                        getBody.push(""); //for answer in question component
+                    }
+                    //end of logic
                     getBody.push(escapeCSV(val));
+
                 }
+
                 if (Array.isArray(val) && typeof val[0] == 'object') {
-                    val.forEach((v, k) => {                        
+                    val.forEach((v, k) => {
                         if (!v.value)
                             return; // this is only meant for options in a question component
 
@@ -88,13 +108,13 @@ export const downloadCSV = (data, filename = "template.csv") => {
                         getTheAnswers += v.isCorrect ? v.value : "";
                         if (k === val.length - 1)
                             getBody.push(escapeCSV(getTheAnswers));
-                    }); 
+                    });
                 }
             }); 
             csvRows.push(getBody.join(","));
         });        
     };
-    
+    //exit();
     const csvContent = csvRows.join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
