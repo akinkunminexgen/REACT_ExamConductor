@@ -8,6 +8,7 @@ body {
     background-color: dimgrey;
 }
 
+
 .exam-container {
     background: #ffffff;
     max-width: 600px;
@@ -262,4 +263,8 @@ body {
     clip: rect(0, 0, 0, 0) !important;
     white-space: nowrap !important;
     border: 0 !important;
+}
+
+.form-control-auto {
+    width: auto !important;
 }

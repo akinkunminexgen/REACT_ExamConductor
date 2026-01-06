@@ -50,7 +50,7 @@ export default function StudentEnrollment({ setModalOpen, student }) {
                 { id: 133, title: "Social Media" },
             ],
             "enrolledCourses": [
-                { id: 101, title: "Mathematics" },
+                { id: 101, title: "Mathematics", "date": "2025-06-15T10:00:00", },
                 { id: 102, title: "Physics" },
                 { id: 103, title: "Chemistry" },
             ]
@@ -210,7 +210,7 @@ export default function StudentEnrollment({ setModalOpen, student }) {
                                     .map((course, index) => (
                                         <tr key={index}>
                                             <td>{course.title}</td>
-                                            <td>{new Date(course.Date).toLocaleString()}</td>
+                                            <td>{new Date(course.date).toLocaleString()}</td>
                                         </tr>
                                     ))}
                             </tbody>

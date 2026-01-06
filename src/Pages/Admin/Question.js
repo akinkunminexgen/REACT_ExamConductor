@@ -3,7 +3,7 @@ import InputText from "../../components/InputText";
 import QuestionForm from "../../components/AdminComponent/QuestionForm";
 import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
 import { adminQuestionLoad, exam } from '../../Data';
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
@@ -44,10 +44,10 @@ export default function Question() {
     }
 
 
-    const handleAQuestion = (question) => {
+    const handleAQuestion = useCallback((question) => {
         setSelectedQuestion({ ...question });
         setModalIsOpenForEdit(true);
-    };
+    }, []);
 
 
 
@@ -167,7 +167,7 @@ export default function Question() {
         }
     };
 
-    const handleDelete = async (theQuestion) => {
+    const handleDelete = useCallback(async (theQuestion) => {
         try {
             const response = await fetch(`/api/questions/delete/${theQuestion.questionId}`, {
                 method: "DELETE",
@@ -195,7 +195,7 @@ export default function Question() {
             console.error("Error saving question:", rowData);
             setError((prev) => `errorihfkehidfvnhj${theQuestion.questionId}`);
         }
-    };
+    }, []);
 
 
 
@@ -240,7 +240,7 @@ export default function Question() {
                     <Button
                         color="danger"
                         size="sm"
-                        onClick={() => handleD(params.data)}
+                        onClick={() => handleDelete(params.data)}
                     >
                         <FaTimes />
                     </Button>

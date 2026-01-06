@@ -32,7 +32,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
         if (toEdit && Object.keys(toEdit).length > 0) {
             enableEdit();
         }
-    }, []);
+    }, [toEdit]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -59,7 +59,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
             newVal = [retrieveOptions[key][0], value];
         }
         setRetrieveOptions((p) => ({ ...p, [key]: newVal }));
-        console.log(retrieveOptions);
+        //console.log(retrieveOptions);
         return;
     }
 
@@ -138,7 +138,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        rowDataLength += 1;
+        const nextQuestionId = form.questionId ?? rowDataLength + 1;
         
         let err = validate();
         setErrors(err);
@@ -156,7 +156,7 @@ export default function QuestionForm({ setModalOpen, handleSave, rowDataLength, 
             }));
             const latestQuestion = {
                 ...form,
-                questionId: form.questionId ?? rowDataLength,
+                questionId: form.questionId ?? nextQuestionId,
                 options: form.provideAnswer ? [] : optionArray || []
             }
             setForm(latestQuestion);

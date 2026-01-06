@@ -35,7 +35,7 @@ export const downloadCSV = (data, filename = "template.csv") => {
     const { maxIndex, maxLength } = getHighestOptionLength(data);
     let getPosition = 0;
     if (toAllowTemplate) {
-        data = [data]; //to ensure it is in list format for template.csv
+        data = Array.isArray(data) ? data : [data]; //to ensure it is in list format for template.csv
     } else {        
         getPosition = maxIndex === -1 ? 0 : maxIndex;
     }
@@ -46,23 +46,23 @@ export const downloadCSV = (data, filename = "template.csv") => {
 
     if (typeof data[getPosition] === "object" && data[getPosition] !== null) {
 
-        Object.entries(data[getPosition]).forEach((val, k) => {
-            if (!Array.isArray(val[1])) {
-                getHeader.push(escapeCSV(val[0]))
+        Object.entries(data[getPosition]).forEach(([theKeyV, firstValue], k) => {
+            if (!Array.isArray(firstValue)) {
+                getHeader.push(escapeCSV(theKeyV))
 
-                if (val[0] === "provideAnswer")
+                if (theKeyV === "provideAnswer")
                     provideAnswerPosition = k+1;
             }
                 
 
                 
-            if (Array.isArray(val[1]) && typeof val[1][0] == 'object') {
-                const theOptionHeader = val[1].map((v, k) => {
-                    if (!v.value)
+            if (Array.isArray(firstValue) && typeof firstValue[0] == 'object') {
+                firstValue.forEach((opt, k) => {
+                    if (!opt.value)
                         return; // this is only meant for options in a question component
-                    getHeader.push(escapeCSV(v.value));
+                    getHeader.push(escapeCSV(opt.value));
 
-                    if (k === (val[1].length - 1))
+                    if (k === (firstValue.length - 1))
                         getHeader.push(escapeCSV("Answers"));
                 });
             }            
@@ -114,7 +114,7 @@ export const downloadCSV = (data, filename = "template.csv") => {
             csvRows.push(getBody.join(","));
         });        
     };
-    //exit();
+
     const csvContent = csvRows.join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");

@@ -70,27 +70,29 @@ export default function Student() {
     const gridStyle = useMemo(() => ({ width: "100%", height: "80vh" }), []);
 
     const [columnDefs, setColumnDefs] = useState([
+        { field: "studentNumber", headerName: "Matric No.", width: 60, pinned: "left", lockPinned: true, cellClass: "lock-pinned", },
         {
-            field: "StudentNumber", headerName: "Matric No.", width: 60, pinned: "left", lockPinned: true, cellClass: "lock-pinned", },
-        { field: "FullName", headerName: "Full Name", maxWidth: 150, pinned: "left" },
-        { field: "Email", headerName: "Email", minWidth: 180 },
-        { field: "Grade", headerName: "Grade" },
-        { field: "Section", headerName: "Section" },
-        { field: "DateOfBirth", headerName: "Date of Birth", valueFormatter: params => new Date(params.value).toLocaleDateString() },
-        { field: "Gender", headerName: "Gender" },
-        { field: "IsActive", headerName: "Active", cellRenderer: params => params.value ? "Yes" : "No" },
-        { field: "IsEligibleForExam", headerName: "Eligible for Exam", cellRenderer: params => params.value ? "Yes" : "No" },
-        { field: "EligibilityReason", headerName: "Eligibility Reason" },
-        { field: "ParentPhone", headerName: "Parent Contact" },
-        { field: "Notes", headerName: "Notes" },
-        { field: "LastModified", headerName: "Last Modified", valueFormatter: params => new Date(params.value).toLocaleString() },
-        { field: "CreatedBy", headerName: "Created By" },
-        { field: "CreatedAt", headerName: "Created At", valueFormatter: params => new Date(params.value).toLocaleString() },
+            field: "fullName", headerName: "Full Name", maxWidth: 150, pinned: "left", valueGetter: params =>
+                `${params.data?.firstName ?? ""} ${params.data?.middleName ?? ""} ${params.data?.surname ?? ""}`.trim()
+        },
+        { field: "email", headerName: "Email", minWidth: 180 },
+        { field: "grade", headerName: "Grade" },
+        { field: "section", headerName: "Section" },
+        { field: "dateOfBirth", headerName: "Date of Birth", valueFormatter: params => new Date(params.value).toLocaleDateString() },
+        { field: "gender", headerName: "Gender" },
+        { field: "isActive", headerName: "Active", cellRenderer: params => params.value ? "Yes" : "No" },
+        { field: "isEligibleForExam", headerName: "Eligible for Exam", cellRenderer: params => params.value ? "Yes" : "No" },
+        { field: "eligibilityReason", headerName: "Eligibility Reason" },
+        { field: "parentPhone", headerName: "Parent Contact" },
+        { field: "notes", headerName: "Notes" },
+        { field: "lastModified", headerName: "Last Modified", valueFormatter: params => new Date(params.value).toLocaleString() },
+        { field: "createdBy", headerName: "Created By" },
+        { field: "createdAt", headerName: "Created At", valueFormatter: params => new Date(params.value).toLocaleString() },
         {
-            field: "Exams",
+            field: "exams",
             headerName: "Assigned Exams",
             pinned: "right",
-            width: 60,
+            width: 140,
             cellRenderer: (params) => (
 
                 <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
@@ -101,18 +103,18 @@ export default function Student() {
                         onClick={() => handleAStudent(params.data)}
                     >
                         <FaEdit />
-                    </Button>
-
-                    <Button color="info"
-                        title="View details"
-                        size="sm" onClick={() => handleShowExams(params.data.AssignedExams, params.data.FullName)}>
-                        <FaEye />
-                    </Button>
+                    </Button>                    
 
                     <Button color="info"
                         title="Manage Enrollment"
                         size="sm" onClick={() => handleEnrollment(params.data)}>
                         <FaUserCog />
+                    </Button>
+
+                    <Button color="secondary"
+                        title="View details"
+                        size="sm" onClick={() => handleShowExams(params.data.assignedExams, params.data.fullName)}>
+                        <FaEye />
                     </Button>
                 </div>
                 
@@ -228,8 +230,8 @@ export default function Student() {
                                                 .filter(exam => exam.score == null)
                                                 .map((exam, index) => (
                                                     <tr key={index}>
-                                                        <td>{exam.Subject}</td>
-                                                        <td>{new Date(exam.Date).toLocaleString()}</td>
+                                                        <td>{exam.subject}</td>
+                                                        <td>{new Date(exam.date).toLocaleString()}</td>
                                                     </tr>
                                                 ))}
                                         </tbody>
@@ -256,8 +258,8 @@ export default function Student() {
                                                 .filter(exam => exam.score != null)
                                                 .map((exam, index) => (
                                                     <tr key={index}>
-                                                        <td>{exam.Subject}</td>
-                                                        <td>{new Date(exam.Date).toLocaleString()}</td>
+                                                        <td>{exam.subject}</td>
+                                                        <td>{new Date(exam.date).toLocaleString()}</td>
                                                         <td>
                                                             <span
                                                                 className={`badge bg-${exam.score >= 70
