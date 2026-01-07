@@ -1,14 +1,14 @@
-import Body from "../../components/Panels/Body";
+import Body from "../../../components/Panels/Body";
 import Modal from "react-modal";
 import { FaPlus, FaEdit, FaEye, FaPen } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle } from "reactstrap";
-import ScheduleForm from "../../components/AdminComponent/ScheduleForm";
-import GroupAssignment from "../../components/AdminComponent/GroupAssignment";
-import GlobalLoader from "../../components/Common/GlobalLoader";
-import { useLoading } from "../../context/LoadingContext";
+import ScheduleForm from "../../../components/AdminComponent/ScheduleForm";
+import GroupAssignment from "../../../components/AdminComponent/GroupAssignment";
+import GlobalLoader from "../../../components/Common/GlobalLoader";
+import { useLoading } from "../../../context/LoadingContext";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -249,7 +249,7 @@ export default function ExamSchedule() {
                     onRequestClose={() => setModalEditAccess(false)}
                     className="my-modal-content"
                     overlayClassName="my-modal-overlay"
-                    style={{ content: { width: "80%", maxWidth: "1000px", maxHeight: "90%", margin: "auto", overflow: "auto", padding: "30px" } }}
+                    style={{ content: { width: "80%", maxWidth: "1400px", maxHeight: "80vh", margin: "auto", overflow: "auto", padding: "30px" } }}
                 >
                     <GroupAssignment setModalOpen={setModalEditAccess} />
                 </Modal>

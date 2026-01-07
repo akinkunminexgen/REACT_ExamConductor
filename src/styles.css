@@ -268,3 +268,146 @@ body {
 .form-control-auto {
     width: auto !important;
 }
+
+.fancy-search-btn {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    border: none;
+    color: #fff;
+    font-weight: 300;
+    padding: 3px 4px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(79, 70, 229, 0.35);
+    transition: all 0.25s ease-in-out;
+}
+.fancy-search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
+}
+
+.fancy-search-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+.student-card {
+    transition: all 0.25s ease;
+    border-radius: 14px;
+}
+
+    .student-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+/* Fancy Checkbox */
+.fancy-checkbox {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .fancy-checkbox input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .fancy-checkbox .checkmark {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: #f9fafb;
+        border: 2px solid #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    /* Checked */
+    .fancy-checkbox input:checked ~ .checkmark {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        border-color: #4f46e5;
+    }
+
+    /* Check icon */
+    .fancy-checkbox .checkmark::after {
+        content: "";
+        width: 6px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        opacity: 0;
+    }
+
+    .fancy-checkbox input:checked ~ .checkmark::after {
+        opacity: 1;
+    }
+
+/* Student name */
+.card-name-data {
+    font-weight: 500;
+    color: #111827;
+}
+
+.class-card {
+    transition: all 0.25s ease;
+    border-radius: 14px;
+}
+
+    .class-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .class-card.selected {
+        border: 2px solid #4f46e5;
+        background: #eef2ff;
+    }
+
+/* Fancy Radio */
+.fancy-radio {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .fancy-radio input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .fancy-radio .radiomark {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #f9fafb;
+        border: 2px solid #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .fancy-radio input:checked ~ .radiomark {
+        border-color: #4f46e5;
+    }
+
+    .fancy-radio .radiomark::after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: #4f46e5;
+        border-radius: 50%;
+        opacity: 0;
+    }
+
+    .fancy-radio input:checked ~ .radiomark::after {
+        opacity: 1;
+    }
+
+
+
+

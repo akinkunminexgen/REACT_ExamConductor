@@ -1,18 +1,18 @@
 
-import { student, exam } from '../../Data';
+import { student, exam } from '../../../Data';
 import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport, FaEye, FaInfoCircle, FaUserCog } from "react-icons/fa";
 import { useEffect, useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { downloadCSV } from "../../helper/CsvHelper";
-import Error from "../../components/Error";
-import Body from "../../components/Panels/Body";
-import StudentForm from "../../components/AdminComponent/StudentForm";
-import GlobalLoader from "../../components/Common/GlobalLoader";
-import StudentEnrollment from "../../components/AdminComponent/StudentEnrollment";
-import { useLoading } from "../../context/LoadingContext";
+import { downloadCSV } from "../../../helper/CsvHelper";
+import Error from "../../../components/Error";
+import Body from "../../../components/Panels/Body";
+import StudentForm from "../../../components/AdminComponent/StudentForm";
+import GlobalLoader from "../../../components/Common/GlobalLoader";
+import StudentEnrollment from "../../../components/AdminComponent/StudentEnrollment";
+import { useLoading } from "../../../context/LoadingContext";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 

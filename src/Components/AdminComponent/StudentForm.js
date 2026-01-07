@@ -16,7 +16,9 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
         setPhoto({
             fileName: file.name,
             fileType,
-            fileContent: content
+            fileContent: content,
+            file,
+            previewUrl: URL.createObjectURL(file)
         });
     }, []);
 
@@ -56,7 +58,6 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
     const validate = () => {
         let err = {};
         if (!form.studentNumber) err.StudentNumber = "Required";
-        if (!form.fullName) err.FullName = "Required";
         if (!form.email) err.Email = "Email required";
         if (!form.gender) err.Gender = "Required";
         if (!form.dob) err.dob = "DoB required";
@@ -67,17 +68,33 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
         return err;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (file) => {
+        
+        //e.preventDefault();
         let err = validate();
         setErrors(err);
+        console.log("hfhfhfhfh", err)
         
         if (Object.keys(err).length === 0) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const response = await fetch("/api/uploads/student-photo", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!response.ok) {
+               throw new Error("Photo upload failed");
+            }
+
+           return await response.json(); 
 
             const payload = {
                 ...form,
                 photo: photo
                     ? {
+                        previewUrl: photo.file,
                         fileName: photo.fileName,
                         fileType: photo.fileType,
                         fileContent: photo.fileContent
@@ -85,7 +102,7 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
                     : null
             };
 
-            console.log("SUBMITTED DATA:", form);
+            console.log("SUBMITTED DATA:", payload);
             alert("Student Record Saved Successfully!");
 
             setModalOpen(false);
@@ -153,9 +170,9 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
                                     onChange={handleChange}
                                     placeholder="Enter firstname"
                                 />
-                                {errors.FullName && (
+                                {errors.FirstName && (
                                     <small className="text-danger">
-                                        {errors.FullName}
+                                        {errors.FirstName}
                                     </small>
                                 )}
                             </div>
@@ -176,7 +193,7 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
                                 />
                                 {errors.FullName && (
                                     <small className="text-danger">
-                                        {errors.FullName}
+                                        {errors.MiddleName}
                                     </small>
                                 )}
                             </div>
@@ -196,9 +213,9 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
                                     onChange={handleChange}
                                     placeholder="Enter lastname"
                                 />
-                                {errors.FullName && (
+                                {errors.Surname && (
                                     <small className="text-danger">
-                                        {errors.FullName}
+                                        {errors.Surname}
                                     </small>
                                 )}
                             </div>
@@ -223,7 +240,7 @@ export default function StudentForm({ setModalOpen, toEdit = {} }) {
                                 <Label className="fw-semibold text-secondary mb-0">Date of Birth</Label>
                             </div>
                             <div className="col-8">
-                                <Input name="dob" type="date" value={form.dob || ""} onChange={handleChange} />
+                                <Input name="dob" type="date" value={form.dob ? form.dob.split("T")[0] : ""} onChange={handleChange} />
                                 {errors.dob && <small className="text-danger">{errors.dob}</small>}
                             </div>
                         </div>

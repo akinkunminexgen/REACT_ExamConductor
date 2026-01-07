@@ -1,17 +1,17 @@
-import Body from "../../components/Panels/Body";
-import InputText from "../../components/InputText";
-import QuestionForm from "../../components/AdminComponent/QuestionForm";
+import Body from "../../../components/Panels/Body";
+import InputText from "../../../components/InputText";
+import QuestionForm from "../../../components/AdminComponent/QuestionForm";
 import { FaDownload, FaTimes, FaEdit, FaPlus, FaFileImport, FaFileExport } from "react-icons/fa";
-import { adminQuestionLoad, exam } from '../../Data';
+import { adminQuestionLoad, exam } from '../../../Data';
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import Modal from "react-modal";
-import Error from "../../components/Error";
+import Error from "../../../components/Error";
 import { Container, Row, Col, Card, CardBody, CardHeader, CardTitle, CardFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
-import { downloadCSV } from "../../helper/CsvHelper";
-import GlobalLoader from "../../components/Common/GlobalLoader";
-import { useLoading } from "../../context/LoadingContext";
+import { downloadCSV } from "../../../helper/CsvHelper";
+import GlobalLoader from "../../../components/Common/GlobalLoader";
+import { useLoading } from "../../../context/LoadingContext";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
