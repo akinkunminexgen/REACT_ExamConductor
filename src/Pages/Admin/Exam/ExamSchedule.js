@@ -86,6 +86,9 @@ export default function ExamSchedule() {
 
     const handleAccess = (data) => {
         setModalEditAccess(true);
+        setSelectedSchedule({
+            ...data
+        });
     }
 
     const handleSave = async (theQuestion) => {
@@ -212,7 +215,8 @@ export default function ExamSchedule() {
                                 floatingFilter: true
                             }}
                             pagination={true}
-                            paginationPageSize={15}
+                            paginationPageSize={10}
+                            paginationPageSizeSelector={[10, 15, 20]}
                         />
                     </div>
                 </div>
@@ -251,7 +255,8 @@ export default function ExamSchedule() {
                     overlayClassName="my-modal-overlay"
                     style={{ content: { width: "80%", maxWidth: "1400px", maxHeight: "80vh", margin: "auto", overflow: "auto", padding: "30px" } }}
                 >
-                    <GroupAssignment setModalOpen={setModalEditAccess} />
+                    <GroupAssignment setModalOpen={setModalEditAccess}
+                        exam={selectedSchedule} />
                 </Modal>
             </Body>
         </>

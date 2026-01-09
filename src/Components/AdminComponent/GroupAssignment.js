@@ -1,12 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
     Button,
-    Card,
-    CardBody,
     Nav,
     NavItem,
     NavLink,
@@ -16,10 +10,12 @@ import {
     FormGroup,
     Label
 } from "reactstrap";
-import { FaSearch } from "react-icons/fa";
 import classnames from "classnames";
 import { motion } from "framer-motion";
+import SelectableCardItem from "../../components/Card/SelectableCardItem";
 import GlobalLoader from "../../components/Common/GlobalLoader";
+import SearchBar from "../../components/Common/SearchBar";
+
 
 const mockClasses = [
     { id: 1, name: "Math 101" },
@@ -27,37 +23,132 @@ const mockClasses = [
 ];
 
 const mockStudents = [
-    { id: 101, name: "John Doe", enroll: true },
-    { id: 102, name: "Jane Smith", enroll: true },
-    { id: 103, name: "Michael Brown", enroll: false },
-    { id: 104, name: "Jacqleen Woltemadenwy", enroll: true },
-    { id: 105, name: "Michael Stone", enroll: false },
+    { id: 101, name: "John Doe", hasAccess: true },
+    { id: 102, name: "Jane Smith", hasAccess: true },
+    { id: 103, name: "Michael Brown", hasAccess: false },
+    { id: 104, name: "Jacqleen Woltemadenwy", hasAccess: true },
+    { id: 105, name: "Michael Stone", hasAccess: false },
 
 ];
 
 const mockGroups = [
-    { id: 201, name: "Exam Access Group" },
-    { id: 202, name: "Assignment Group A" }
+    { id: 201, name: "Exam Access Group", hasAccess: true },
+    { id: 202, name: "Assignment Group A", hasAccess: false }
 ];
 
 
 export default function GroupAssignment({
     setModalOpen,
-    classes = mockClasses,
-    students = mockStudents,
-    groups = mockGroups,
-    onSave = (e) => console.log("Saved payload:", e.target),
+    exam
     
 }) {
     const [activeTab, setActiveTab] = useState("class");
+    const [groups, setGroups] = useState(mockGroups);
+    const [students, setStudents] = useState(mockStudents);
+    const [classes, setClasses] = useState(mockClasses);
     const [selectedClass, setSelectedClass] = useState(null);
     const [searchStudent, setSearchStudent] = useState("");
+    const [searchGroup, setSearchGroup] = useState("");
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const [totalCount, setTotalCount] = useState(0);
+
+
+    const studentArray = useMemo(() => {
+        return students
+            ?.filter(s => s.hasAccess)
+            .map(s => s.id) || [];
+    }, [students]);
+
+    const groupArray = useMemo(() => {
+        return groups
+            ?.filter(g => g.hasAccess)
+            .map(g => g.id) || [];
+    }, [groups]);
+
+    useEffect(() => {
+        setSelectedStudents(studentArray);
+    }, [studentArray]);
+
+    useEffect(() => {
+        setSelectedGroups(groupArray);
+    }, [groupArray]);
+
+
+    useEffect(() => {
+        async function fetchGroups() {
+            try {
+                const res = await fetch(`/api/groups?limit=30&ExamId=${ exam.id}`);
+
+                if (!res.ok) throw new Error("Failed");
+
+                const data = await res.json();
+
+                setGroups(data.groups);
+                setTotalCount(data.totalCount);
+            } catch (err) {
+                console.error("Failed to load groups", err);
+                setTotalCount(151);
+            }
+        }
+
+        fetchGroups();
+    }, []);
+
+
+    useEffect(() => {
+        //showing only direct student that have access to the examSchedule (student in a group or class are exampted)
+        async function fetctStudents() {
+            try {
+                const res = await fetch(`/api/students?ExamId=${exam.id}`);
+
+                if (!res.ok) throw new Error("Failed");
+
+                const data = await res.json();
+
+                setStudents(data.students);
+            } catch (err) {
+                console.error("Failed to load students", err);;
+            }
+        }
+
+        fetctStudents();
+    }, []);
+
+    useEffect(() => {
+        async function fetctClasses() {
+            try {
+                const res = await fetch("/api/classes");
+
+                if (!res.ok) throw new Error("Failed");
+
+                const data = await res.json();
+
+                setStudents(data.students);
+            } catch (err) {
+                console.error("Failed to load classes", err);;
+            }
+        }
+
+        fetctClasses();
+    }, []);
+
+
+
+    
+    const showGroupSearch = totalCount > 30;
+
+    const isSameSet = (a = [], b = []) => {
+        if (a.length !== b.length) return true;
+
+        const setA = new Set(a);
+        return b.some(id => !setA.has(id));
+    };
 
     const toggle = (list, value, setter) => {
+        
         setter(
             list.includes(value)
                 ? list.filter(v => v !== value)
@@ -73,27 +164,48 @@ export default function GroupAssignment({
         });
     };
 
-    const [isSearching, setIsSearching] = useState(false);
 
     const handleStudentQuery = async () => {
-        const trimmedValue = searchStudent.trim();
+        var info = {
+            url: "/api/students", name: "Student name or email", errorKey: "searchStudent"
+        };
+        await handleQuery(info, searchStudent, setSearchStudent)
+    }
+
+    const handleGroupQuery = async () => {
+        var info = {
+            url : "/api/groups", name: "Group name", errorKey: "searchGroup"
+        };
+        await handleQuery(info, searchGroup, setSearchGroup)
+    }
+
+
+    const handleQuery = async (info, state, setter) => {
+        const trimmedValue = state.trim();
         setErrors({});
 
         if (!trimmedValue) {
-            setErrors({ searchStudent: "Please enter a student name or email." });
+            setErrors({ [info.errorKey]: "Please enter a "+info.name });
             return;
         }
 
         if (trimmedValue.length < 3) {
-            setErrors({ searchStudent: "Minimum of 3 characters required." });
+            setErrors({ [info.errorKey]: "Minimum of 3 characters required." });
             return;
         }
 
         try {
             setLoading(true);
 
-            // Example API call
-            await fetchStudents(searchStudent.trim());
+            const res = await fetch(
+                `${info.url}?search=${encodeURIComponent(state)}&limit=30`
+            );
+
+            if (!res.ok) throw new Error("Search failed");
+
+            const data = await res.json();
+            setter(data.items);
+
 
         } catch (err) {
             console.error("Search failed", err);
@@ -103,11 +215,12 @@ export default function GroupAssignment({
         }
     };
 
-
+    //console.log(selectedStudents.length)
     return (
         <>
             {loading && <GlobalLoader />}
             {/* Tabs */}
+            <h3>{exam.examTitle}</h3>
             <Nav tabs>
                 {["class", "students", "groups"].map(tab => (
                     <NavItem key={tab}>
@@ -131,32 +244,16 @@ export default function GroupAssignment({
                         className="row g-3"
                     >
                         {classes.map(cls => (
-                            <div className="col-md-4 col-12 mb-2 mb-md-0" key={cls.id}>
-                                <Card
-                                    onClick={() => setSelectedClass(cls.id)}
-                                    className={`cursor-pointer class-card ${selectedClass === cls.id ? "selected" : ""
-                                        }`}
-                                >
-                                    <CardBody className="d-flex align-items-center gap-3">
-                                        <label
-                                            className="fancy-radio"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <Input
-                                                type="radio"
-                                                name="classSelect"
-                                                checked={selectedClass === cls.id}
-                                                onChange={() => setSelectedClass(cls.id)}
-                                            />
-                                            <span className="radiomark"></span>
-                                            <span className="card-name-data ml-2">{cls.name}</span>
-                                        </label>
-
-                                        
-                                    </CardBody>
-                                </Card>
-
-                            </div>
+                            <SelectableCardItem
+                                key={cls.id}
+                                id={cls.id}
+                                label={cls.name}
+                                type="radio"
+                                name="classSelect"
+                                isSelected={selectedClass === cls.id}
+                                onSelect={setSelectedClass}
+                                colClass="col-md-4 col-12"
+                            />
                         ))}
                     </motion.div>
                 </TabPane>
@@ -164,27 +261,13 @@ export default function GroupAssignment({
                 {/* STUDENTS TAB */}
                 <TabPane tabId="students">
                     <FormGroup>
-                        <div className="row justify-content-center align-items-center text-center">
-                            <div className="col-md-4 col-12 mb-2 mb-md-0">
-                                <Input
-                                    name="student"
-                                    type="text"
-                                    value={searchStudent || ""}
-                                    onChange={(e) => setSearchStudent(e.target.value)}
-                                    placeholder="Search student (min. 3 characters)"
-                                />
-                                {errors.searchStudent && <small className="text-danger">{errors.searchStudent}</small>}
-                            </div>
-
-                            <div className="col-md-2 col-12">
-                                <Button
-                                    onClick={handleStudentQuery}
-                                    className="w-100 fancy-search-btn"
-                                >
-                                    <span className="me-2"> <FaSearch className="me-2" /></span> Search
-                                </Button>
-                            </div>
-                        </div>
+                        <SearchBar
+                            value={searchStudent}
+                            onChange={setSearchStudent}
+                            onSearch={handleStudentQuery}
+                            placeholder="Search student (min. 3 characters)"
+                            error={errors.searchStudent}
+                        />
                     </FormGroup>
 
                     <motion.div
@@ -194,79 +277,61 @@ export default function GroupAssignment({
                     >
                         
                         {students.map(s => (
-                            <div className="col-lg-3 col-md-4 col-sm-6 mb-2" key={s.id}>
-                                <Card
-                                    onClick={() =>
-                                        toggle(selectedStudents, s.id, setSelectedStudents)
-                                    }
-                                    className="cursor-pointer student-card"
-                                >
-                                    <CardBody className="d-flex align-items-center gap-3">
-                                        <label
-                                            className="fancy-checkbox"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <Input
-                                                type="checkbox"
-                                                checked={selectedStudents.includes(s.id)}
-                                                onChange={() =>
-                                                    toggle(selectedStudents, s.id, setSelectedStudents)
-                                                }
-                                            />
-                                            <span className="checkmark"> </span>
-                                            <span className="card-name-data ml-2"> {s.name}</span>
-                                        </label>                                        
-                                    </CardBody>
-                                </Card>
-
-
-                            </div>
+                            <SelectableCardItem
+                                key={s.id}
+                                id={s.id}
+                                label={s.name}
+                                type="checkbox"
+                                isSelected={selectedStudents.includes(s.id)}
+                                onSelect={() =>
+                                    toggle(selectedStudents, s.id, setSelectedStudents)
+                                }
+                                colClass="col-lg-3 col-md-4 col-sm-6"
+                            />
                         ))}
                     </motion.div>
                 </TabPane>
 
                 {/* GROUPS TAB */}
                 <TabPane tabId="groups">
+                    {showGroupSearch && (
+                        <FormGroup>
+                            <SearchBar
+                                value={searchGroup}
+                                onChange={setSearchGroup}
+                                onSearch={handleGroupQuery}
+                                placeholder="Search groups (min. 3 characters)"
+                                error={errors.searchGroup}
+                            />
+                        </FormGroup>
+                    )}
+
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="row g-3"
                     >
                         {groups.map(g => (
-                            <div className="col-lg-3 col-md-4 col-sm-6 mb-2" key={g.id}>
-                                <Card
-                                    onClick={() =>
-                                        toggle(selectedGroups, g.id, setSelectedGroups)
-                                    }
-                                    className="cursor-pointer  student-card"
-                                >
-                                    
-                                    <CardBody className="d-flex align-items-center gap-2">
-                                        <label
-                                            className="fancy-checkbox"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <Input
-                                                type="checkbox"
-                                                checked={selectedGroups.includes(g.id)}
-                                                onClick={() =>
-                                                    toggle(selectedGroups, g.id, setSelectedGroups)
-                                                }
-                                            />
-                                            <span className="checkmark"> </span>
-                                            <span className="card-name-data ml-2">{g.name}</span>
-                                        </label>
-                                        
-                                    </CardBody>
-                                </Card>
-                            </div>
+                            <SelectableCardItem
+                                key={g.id}
+                                id={g.id}
+                                label={g.name}
+                                type="checkbox"
+                                isSelected={selectedGroups.includes(g.id)}
+                                onSelect={() =>
+                                    toggle(selectedGroups, g.id, setSelectedGroups)
+                                }
+                                colClass="col-lg-3 col-md-4 col-sm-6"
+                            />
                         ))}
                     </motion.div>
                 </TabPane>
+
+
             </TabContent>
             <div className="row mt-3">
                 <div className="col-6">
-                    <Button color="danger" onClick={onSave} className="w-100">
+                    <Button color="danger" onClick={handleSave} disabled={!isSameSet(selectedStudents, studentArray) && !isSameSet(selectedGroups, groupArray) && !selectedClass} className="w-100">
                         Save
                     </Button>
                 </div>
