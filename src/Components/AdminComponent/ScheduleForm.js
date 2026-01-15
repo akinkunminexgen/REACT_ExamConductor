@@ -27,6 +27,7 @@ export default function ScheduleForm({ setModalOpen, handleSave, toEdit }) {
 
     const [errors, setErrors] = useState({});
 
+
     useEffect(() => {
         if (toEdit) {
             setSchedule(toEdit)
@@ -35,13 +36,16 @@ export default function ScheduleForm({ setModalOpen, handleSave, toEdit }) {
     }, [toEdit]);
 
     const handleDataChange = (e) => {
-        const { name, value, type } = e.target;
+        
+        const { name, value, type, checked } = e.target;
         console.log(type);
         setSchedule((prev) => ({
             ...prev,
             [name]: type === "number" ? Number(value)
                 : type === "checkbox" ? checked
-                    : value }));
+                    : value
+        }));
+        
     };
 
     const handleSubmit = () => {

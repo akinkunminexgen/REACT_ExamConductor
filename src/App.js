@@ -3,6 +3,7 @@ import Conductor from './pages/Conductor';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Student from './pages/Admin/Student/Student';
+import ClassManager from './pages/Admin/Class/Class';
 import Question from './pages/Admin/Question/Question';
 import Settings from './pages/Admin/Setting/Settings';
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -40,6 +41,7 @@ export default function App() {
                                 <Route path="/Settings" element={<Settings />} />
                                 <Route path="/Scheduling" element={<ExamSchedule />} />
                                 <Route path="/AdminDashboard" element={<AdminDashboard />} />
+                                <Route path="/Class" element={<ClassManager />} />
                             </Route>
 
 

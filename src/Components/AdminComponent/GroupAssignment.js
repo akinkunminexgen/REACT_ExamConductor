@@ -80,7 +80,7 @@ export default function GroupAssignment({
     useEffect(() => {
         async function fetchGroups() {
             try {
-                const res = await fetch(`/api/groups?limit=30&ExamId=${ exam.id}`);
+                const res = await fetch(`/api/groups?limit=30&ExamId=${exam.id}`);
 
                 if (!res.ok) throw new Error("Failed");
 
