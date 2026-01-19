@@ -17,24 +17,39 @@ import {
 } from "reactstrap";
 import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaUserGraduate, FaCalendarAlt, FaFileImport, FaFileExport, FaDownload } from "react-icons/fa";
 import AsyncComboBox from "../../components/Common/AsyncComboBox";
+import type { ClassDto } from "../../../src/types/ClassDto";
 
-const initialFormState = {
-    courseId: "",
-    termId: "",
-    teacherId: "",
+interface ClassFormProps {
+    setModalOpen: (open: boolean) => void;
+    handleSave: (data: ClassDto) => void;
+    toEdit?: ClassDto | null;
+}
+
+interface ComboOption {
+    id: number;
+    name: string;
+}
+
+type FormErrors = Partial<Record<keyof ClassDto, string>>;
+
+const initialFormState: ClassDto = {
+    classId: 0,
+    courseId: 0,
+    termId: 0,
+    teacherId: 0,
     sectionCode: "",
     startDate: "",
     endDate: "",
-    maxStudents: "",
+    maxStudents: 0,
     status: "",
     teacherName: null,
     courseName: null,
     termName: null
 };
 
-export default function ClassForm({ setModalOpen, handleSave, toEdit = {} }) {
-    const [form, setForm] = useState(initialFormState);
-    const [errors, setErrors] = useState({});
+export default function ClassForm({ setModalOpen, handleSave, toEdit = null }: ClassFormProps) {
+    const [form, setForm] = useState <ClassDto>(initialFormState);
+    const [errors, setErrors] = useState<FormErrors>({});
 
     const [teachers, setTeachers] = useState([]);
     const [courses, setCourses] = useState([]);
@@ -48,7 +63,13 @@ export default function ClassForm({ setModalOpen, handleSave, toEdit = {} }) {
    
     useEffect(() => {
         if (!isEdit) return;
+        const edited: ClassDto = {
+            ...toEdit,
+            startDate: toEdit.startDate.split("T")[0],
+            endDate: toEdit.endDate.split("T")[0],
+        };
 
+        setForm(edited);
         setForm({
             ...toEdit,
             startDate: toEdit.startDate?.split("T")[0] || "",
@@ -58,7 +79,7 @@ export default function ClassForm({ setModalOpen, handleSave, toEdit = {} }) {
     }, [isEdit, toEdit]);
 
     
-    const loadTeachers = async (inputValue) => {
+    const loadTeachers = async (inputValue: string): Promise<ComboOption[]> => {
         if (inputValue.length < 3) return [];
 
         // Replace with real API call
@@ -77,7 +98,7 @@ export default function ClassForm({ setModalOpen, handleSave, toEdit = {} }) {
 
 
 
-    const loadTerms = async (inputValue) => {
+    const loadTerms = async (inputValue: string): Promise<ComboOption[]> => {
         if (inputValue.length < 2) return [];
 
         const res = await fetch(`/api/terms?search=${inputValue}`);
@@ -94,7 +115,7 @@ export default function ClassForm({ setModalOpen, handleSave, toEdit = {} }) {
     };
 
 
-    const loadCourses = async (inputValue) => {
+    const loadCourses = async (inputValue: string): Promise<ComboOption[]> => {
         if (inputValue.length < 3) return [];
 
         const res = await fetch(`/api/courses?search=${inputValue}`);
@@ -126,7 +147,7 @@ export default function ClassForm({ setModalOpen, handleSave, toEdit = {} }) {
     };
 
     const validate = () => {
-        let err = {};
+        let err: FormErrors = {};
         if (!form.courseId) err.courseId = "Required";
         if (!form.termId) err.termId = "Required";
         if (!form.teacherId) err.teacherId = "Required";

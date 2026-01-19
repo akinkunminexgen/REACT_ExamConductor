@@ -17,21 +17,20 @@ import {
 } from "reactstrap";
 import Modal from "react-modal";
 import { AgGridReact } from "ag-grid-react";
-import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
+import { ModuleRegistry, AllCommunityModule, ColDef, ValueGetterParams } from "ag-grid-community";
 import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaUserGraduate, FaCalendarAlt, FaFileImport, FaFileExport, FaDownload } from "react-icons/fa";
 import ClassForm from "../../../components/AdminComponent/ClassForm";
-import Error from "../../../components/Error";
+import ErrorMessage from "../../../components/Error";
 import { useLoading } from "../../../context/LoadingContext";
 import GlobalLoader from "../../../components/Common/GlobalLoader";
 import { downloadCSV } from "../../../helper/CsvHelper";
+import type { ClassDto } from "../../../types/ClassDto";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const initialRows = [
+const initialRows: ClassDto[] = [
     {
         "classId": 1001,
-        "organizationId": 1,
-        "organizationName": "XYZ School",
         "courseId": 101,
         "courseName": "MTH-204",
         "termId": 20251,
@@ -46,8 +45,6 @@ const initialRows = [
     },
     {
         "classId": 1002,
-        "organizationId": 1,
-        "organizationName": "XYZ School",
         "courseId": 102,
         "courseName": "PHY-110",
         "termId": 20251,
@@ -62,8 +59,6 @@ const initialRows = [
     },
     {
         "classId": 1003,
-        "organizationId": 2,
-        "organizationName": "ABC College",
         "courseId": 205,
         "courseName": "CSC-301",
         "termId": 20252,
@@ -78,8 +73,6 @@ const initialRows = [
     },
     {
         "classId": 1004,
-        "organizationId": 2,
-        "organizationName": "ABC College",
         "courseId": 210,
         "courseName": "ENG-150",
         "termId": 20252,
@@ -98,85 +91,79 @@ const initialRows = [
 export default function ClassManager() {
 
     const { loading, setLoading } = useLoading();
-    const [rowData, setRowData] = useState(initialRows);
+    const [rowData, setRowData] = useState<ClassDto[]>(initialRows);
     const [modal, setModal] = useState(false);
-    const [form, setForm] = useState({});
-    const [modalIsOpenToEdit, setModalIsOpenToEdit] = useState(false);
-    const [modalIsOpenToCreate, setModalIsOpenToCreate] = useState(false);
-    const [error, setError] = useState(null);
+    const [form, setForm] = useState<ClassDto | null>(null);
+    const [modalIsOpenToEdit, setModalIsOpenToEdit] = useState<boolean>(false);
+    const [modalIsOpenToCreate, setModalIsOpenToCreate] = useState<boolean>(false);
+
+    const [error, setError] = useState<string | null>(null);
 
     /* ---- grid columns ---- */
-    const columnDefs = useMemo(
-        () => [
-           
-            {
-                headerName: "Class",
-                field: "className",
-                width: 100,
-                filter: "agNumberColumnFilter",
-            },
-            { headerName: "Course", field: "courseName", floatingFilter: true, width: 150 },
-            { headerName: "Term", field: "termName", floatingFilter: true, width: 130 },
-            { headerName: "Section", field: "sectionCode", floatingFilter: true, width: 110 },
-            {
-                headerName: "Dates",
-                field: "startDate",
-                width: 200,
-                valueGetter: (p) =>
-                    `${p.data.startDate} -- ${p.data.endDate}`,
-            },
-            { headerName: "Teacher", field: "teacherName", width: 120 },
-            {
-                headerName: "Capacity",
-                field: "maxStudents",
-                floatingFilter: true,
-                width: 120,
-                filter: "agNumberColumnFilter",
-            },
-            {
-                headerName: "Status",
-                field: "status",
-                floatingFilter: true,
-                width: 150,
-                cellRenderer: (p) => (
-                    <Badge
-                        color={p.value === "Active" ? "success" : "secondary"}
-                        className="w-100"
+    const columnDefs = useMemo<ColDef<ClassDto>[]>(() => [
+        {
+            headerName: "Course",
+            field: "courseName",
+            floatingFilter: true
+        },
+        {
+            headerName: "Term",
+            field: "termName",
+            floatingFilter: true
+        },
+        {
+            headerName: "Section",
+            field: "sectionCode"
+        },
+        {
+            headerName: "Dates",
+            valueGetter: (p: ValueGetterParams<ClassDto>) =>
+                `${p.data?.startDate} -- ${p.data?.endDate}`
+        },
+        {
+            headerName: "Teacher",
+            field: "teacherName"
+        },
+        {
+            headerName: "Capacity",
+            field: "maxStudents",
+            filter: "agNumberColumnFilter"
+        },
+        {
+            headerName: "Status",
+            field: "status",
+            cellRenderer: (p: { value: ClassDto["status"] }) => (
+                <Badge color={p.value === "Active" ? "success" : "secondary"}>
+                    {p.value}
+                </Badge>
+            )
+        },
+        {
+            headerName: "",
+            width: 120,
+            cellRenderer: (p: { data: ClassDto }) => (
+                <>
+                    <Button
+                        size="sm"
+                        color="warning"
+                        onClick={() => handleEdit(p.data)}
                     >
-                        {p.value}
-                    </Badge>
-                ),
-            },
-            {
-                headerName: "",
-                field: "actions",
-                width: 120,
-                cellRenderer: (p) => (
-                    <>
-                        <Button
-                            color="warning"
-                            size="sm"
-                            className="me-1"
-                            onClick={() => handleEdit(p.data)}
-                        >
-                            <FaEdit />
-                        </Button>
-                        <Button
-                            color="danger"
-                            size="sm"
-                            onClick={() => handleDelete(p.data.ClassId)}
-                        >
-                            <FaTrash />
-                        </Button>
-                    </>
-                ),
-                suppressHeaderMenuButton: true,
-                sortable: false,
-                filter: false,
-            }
-        ],
-        []
-    );
+                        <FaEdit />
+                    </Button>
+                    <Button
+                        size="sm"
+                        color="danger"
+                        onClick={() => handleDelete(p.data.classId)}
+                    >
+                        <FaTrash />
+                    </Button>
+                </>
+            ),
+            sortable: false,
+            filter: false
+        }
+    ], []);
+
 
     const gridStyle = useMemo(() => ({ width: "100%", height: "72vh" }), []);
 
@@ -193,60 +180,51 @@ export default function ClassManager() {
     );
 
 
-    const handleEdit = (row) => {
+    const handleEdit = (row: ClassDto): void => {
         setForm({ ...row });
         setModalIsOpenToEdit(true)
     };
 
-    const handleDelete = (id) => {
-        setRowData((prev) => prev.filter((r) => r.ClassId !== id));
+    const handleDelete = (id: number): void => {
+        setRowData((prev) => prev.filter((r) => r.classId !== id));
     };
 
-    const TemplateDownloader = () => {
+    const TemplateDownloader = (): void => {
         const getOneRowData = rowData; //to always get template;
         downloadCSV(getOneRowData, "Class_Template");
     };
 
-    const handleSave = async (data) => {
+    const handleSave = async (data: ClassDto): Promise<void> => {
         setLoading(true);
+
         try {
             const response = await fetch(`/api/classmanager/${data.classId}`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
             });
 
-            if (!response.ok)
-                throw new Error("Failed to save the question.");
+            if (!response.ok) throw new Error("Save failed");
 
-            const updatedClass = await response.json();
+            const updatedClass: ClassDto = await response.json();
 
             setRowData(prev => {
-                const exists = prev.some(q => q.classId === updatedClass.classId);
-
-                if (exists) {
-                    return prev.map(theClass =>
-                        theClass.classId === updatedClass.classId ? updatedClass : theClass
-                    );
-                } else {
-                    // Add new class
-                    return [...prev, updatedClass];
-                }
+                const exists = prev.some(c => c.classId === updatedClass.classId);
+                return exists
+                    ? prev.map(c => c.classId === updatedClass.classId ? updatedClass : c)
+                    : [...prev, updatedClass];
             });
 
-            // Close modal
             setModalIsOpenToEdit(false);
             setModalIsOpenToCreate(false);
             setError(null);
-            setLoading(false);
-        } catch (err) {
-
-            setError((prev) => `Failed to add Class`);
+        } catch {
+            setError("Failed to add Class");
+        } finally {
             setLoading(false);
         }
     };
+
 
     
 
@@ -255,9 +233,9 @@ export default function ClassManager() {
         <>
             {loading && <GlobalLoader />}
             {error && (
-                <Error errorMessage={error} />
+                <ErrorMessage errorMessage={error} />
             )}
-            <Body className="my-4">
+            <Body>
 
                 <Card>
                     <CardHeader className="d-flex justify-content-between align-items-center">
